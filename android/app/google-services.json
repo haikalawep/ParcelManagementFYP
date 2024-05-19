@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "741236385874",
+    "project_id": "parcelfyp",
+    "storage_bucket": "parcelfyp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741236385874:android:45c39ffe03beb75075978b",
+        "android_client_info": {
+          "package_name": "com.example.parcelmanagement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5rQbodUEfd93sYnPArjZPqGdzrnfOxu0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
