@@ -20,18 +20,10 @@ class _StatusDetailState extends State<StatusDetail> {
   String qrURL = '';
   bool showQRCode = false;
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _dateManagedController = TextEditingController();
-  TextEditingController _codeController = TextEditingController();
-  TextEditingController _colorController = TextEditingController();
   TextEditingController _optCollectController = TextEditingController();
-  TextEditingController _sizeController = TextEditingController();
-  TextEditingController _statusController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _parcelNoController = TextEditingController();
-  TextEditingController _chargeController = TextEditingController();
+
   TextEditingController _qrController = TextEditingController();
-  TextEditingController _trackNoController = TextEditingController();
+
 
   String? selectedCollect;
 
@@ -40,18 +32,8 @@ class _StatusDetailState extends State<StatusDetail> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.parcel.nameR;
-    _dateManagedController.text =
-        DateFormat('yyyy-MM-dd').format(widget.parcel.dateManaged);
-    _codeController.text = widget.parcel.code;
-    _colorController.text = widget.parcel.color;
+
     _optCollectController.text = widget.parcel.optCollect;
-    _sizeController.text = widget.parcel.size;
-    _statusController.text = widget.parcel.status;
-    _phoneController.text = widget.parcel.phoneR;
-    _parcelNoController.text = widget.parcel.parcelNo.toString();
-    _chargeController.text = widget.parcel.charge.toString();
-    _trackNoController.text = widget.parcel.trackNo;
 
     _qrController.text = widget.parcel.qrURL;
 
@@ -68,6 +50,8 @@ class _StatusDetailState extends State<StatusDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF9E5DE),
+
       appBar: AppBar(
         title: Text('Parcel Details'),
         leading: IconButton(
@@ -86,8 +70,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Parcel Name",
-                      hintText: "Enter Name",
-                      controller: _nameController,
+                      hintText: widget.parcel.nameR,
                       enabled: false,
                     ),
                   ),
@@ -95,8 +78,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Tracking Number",
-                      hintText: "Enter Track Number",
-                      controller: _trackNoController,
+                      hintText: widget.parcel.trackNo,
                       enabled: false,
                     ),
                   ),
@@ -104,8 +86,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Date Managed",
-                      hintText: "Select Date",
-                      controller: _dateManagedController,
+                      hintText: DateFormat('yyyy-MM-dd').format(widget.parcel.dateManaged),
                       enabled: false, // Disable editing for the date field
                     ),
                   ),
@@ -113,8 +94,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Code",
-                      hintText: "Enter Code",
-                      controller: _codeController,
+                      hintText: widget.parcel.code,
                       enabled: false,
                     ),
                   ),
@@ -122,8 +102,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Color",
-                      hintText: "Enter Color",
-                      controller: _colorController,
+                      hintText: widget.parcel.color,
                       enabled: false,
                     ),
                   ),
@@ -155,8 +134,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Size",
-                      hintText: "Enter Size",
-                      controller: _sizeController,
+                      hintText: widget.parcel.size,
                       enabled: false,
                     ),
                   ),
@@ -164,8 +142,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Status",
-                      hintText: "Enter Status",
-                      controller: _statusController,
+                      hintText: widget.parcel.status,
                       enabled: false,
                     ),
                   ),
@@ -173,17 +150,14 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Phone Number",
-                      hintText: "Enter Phone Number",
-                      controller: _phoneController,
-                      enabled: false,
+                      hintText: widget.parcel.phoneR,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Parcel No",
-                      hintText: "Enter Parcel No",
-                      controller: _parcelNoController,
+                      hintText: widget.parcel.parcelNo.toString(),
                       enabled: false,
                     ),
                   ),
@@ -191,8 +165,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Charge",
-                      hintText: "Enter Charge",
-                      controller: _chargeController,
+                      hintText: widget.parcel.dateManaged.toString(),
                       enabled: false,
                     ),
                   ),
@@ -216,9 +189,163 @@ class _StatusDetailState extends State<StatusDetail> {
                     ),
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        showQRCode = !showQRCode;
-                      });
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 36,
+                                ),
+                                height: MediaQuery.of(context).size.height * 0.60,
+                                width: MediaQuery.of(context).size.width * 0.860,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment(0.8, 1),
+                                    colors: <Color>[
+                                      Color(0xFFFEEDFC),
+                                      Colors.white,
+                                      Color(0xFFE4E6F7),
+                                      Color(0xFFE2E5F5),
+                                    ],
+                                    tileMode: TileMode.mirror,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      height: 340,
+                                      width: 340,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(60),
+                                        ),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment(0.8, 1),
+                                          colors: <Color>[
+                                            Colors.white,
+                                            Color(0xFFE4E6F7),
+                                            Colors.white,
+                                          ],
+                                          tileMode: TileMode.mirror,
+                                        ),
+                                      ),
+                                      child: Image.network(
+                                        qrURL, // Use the qrURL for the QR code image URL
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    const Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Recipient Generated QR Code!',
+                                          style: TextStyle(
+                                            fontFamily: 'poppins_bold',
+                                            fontSize: 30,
+                                            color: Color(0xFF6565FF),
+                                          ),
+                                        ),
+                                        Text(
+                                          "This is your unique QR code for another person to scan",
+                                          style: TextStyle(
+                                            fontFamily: 'poppins_regular',
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: const BorderRadius.all(
+                                                  Radius.circular(12),
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    blurRadius: 32.0,
+                                                    color: const Color.fromARGB(
+                                                        255, 133, 142, 212)
+                                                        .withOpacity(0.68),
+                                                  ),
+                                                ],
+                                              ),
+                                              // child: const Icon(
+                                              //   EvaIcons.shareOutline,
+                                              //   color: Color(0xFF6565FF),
+                                              // ),
+                                            ),
+                                            //const Gap(8),
+                                            const Text(
+                                              "Share",
+                                              style: TextStyle(
+                                                fontFamily: 'poppins_semi_bold',
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        //const Gap(40),
+                                        Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: const BorderRadius.all(
+                                                  Radius.circular(12),
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    blurRadius: 32.0,
+                                                    color: const Color.fromARGB(
+                                                        255, 133, 142, 212)
+                                                        .withOpacity(0.68),
+                                                  ),
+                                                ],
+                                              ),
+                                              // child: const Icon(
+                                              //   EvaIcons.saveOutline,
+                                              //   color: Color(0xFF6565FF),
+                                              // ),
+                                            ),
+                                            //const Gap(8),
+                                            const Text(
+                                              "Save",
+                                              style: TextStyle(
+                                                fontFamily: 'poppins_semi_bold',
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ); //Show Dialog
                     },
                     child: Text(showQRCode ? 'Hide QR Code' : 'Show QR Code'),
                   ),

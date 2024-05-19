@@ -71,15 +71,18 @@ class _LoginViewState extends State<LoginView> {
         final User? user = userCredential.user;
 
         if (user != null) {
+          String email = user.email ?? '';
+
           // Check if the user is signing in for the first time
           final bool isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
           if (isNewUser) {
             // If the user is new, save their information to Firestore
-            await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+            await FirebaseFirestore.instance.collection('users').doc(email).set({
               'email': user.email,
               'name': user.displayName,
               'mobile': user.phoneNumber,
               'college': 'null',
+              'imageUrl': 'https://firebasestorage.googleapis.com/v0/b/parcelfyp.appspot.com/o/defaultProfileImage.jpg?alt=media&token=73bcb7fb-96d8-4fda-a781-b61259b950c5',
             });
           }
           // Handle navigation based on user role here if needed

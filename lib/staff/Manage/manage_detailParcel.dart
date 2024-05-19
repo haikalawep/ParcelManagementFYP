@@ -45,9 +45,9 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
             dateManaged: (data['dateManaged'] as Timestamp).toDate(),
             code: data['code'] ?? '',
             color: data['color'] ?? '',
-            charge: data['charge'] ?? '',
+            charge: int.parse(data['charge'].toString()) ?? 0,
             optCollect: data['optCollect'] ?? '',
-            parcelNo: data['parcelNo'] ?? '',
+            parcelNo: int.parse(data['parcelNo'].toString()) ?? 0,
             phoneR: data['phoneR'] ?? '',
             size: data['size'] ?? '',
             status: data['status'] ?? '',
@@ -73,14 +73,18 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF9E5DE),
+
       appBar: AppBar(
         title: Text('Manage Parcel'),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
             Tab(text: 'Counter'),
-            Tab(text: 'Box'),
+            Tab(text: 'Box', ),
           ],
+          labelStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.bold), // Increase font size for selected tab
+          unselectedLabelStyle: TextStyle(fontSize: 16),
         ),
       ),
       body: isLoading
@@ -95,8 +99,22 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
             itemCount: counterParcelList.length,
             itemBuilder: (context, index) {
               final parcel = counterParcelList[index];
-              return Card(
+              return Container(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: const Border(
+                    bottom: BorderSide(
+                      color: Colors.black,
+                      width: 5.0,
+                    ),
+                    left: BorderSide(
+                      color: Colors.black,
+                      width: 5.0,
+                    ),
+                  ),
+                  color: Colors.white, // Ensure the container has a background color to match the Card's background
+                ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(
                     vertical: 8,
@@ -111,7 +129,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
                       ),
                     );
                   },
-                  leading: CircleAvatar(
+                  leading: const CircleAvatar(
                     backgroundColor: Colors.green,
                   ),
                   title: Padding(
@@ -132,7 +150,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
                     ),
                   ),
                   trailing: Text(
-                    DateFormat('yyyy-MM-dd').format(parcel.dateManaged),
+                    DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
                     style: const TextStyle(
                       color: Colors.black45,
                       fontSize: 16,
@@ -147,8 +165,22 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
             itemCount: boxParcelList.length,
             itemBuilder: (context, index) {
               final parcel = boxParcelList[index];
-              return Card(
+              return Container(
               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: const Border(
+                    bottom: BorderSide(
+                      color: Colors.blueAccent,
+                      width: 5.0,
+                    ),
+                    left: BorderSide(
+                      color: Colors.blueAccent,
+                      width: 5.0,
+                    ),
+                  ),
+                  color: Colors.white, // Ensure the container has a background color to match the Card's background
+                ),
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 8,
@@ -163,7 +195,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
                     ),
                   );
                 },
-                leading: CircleAvatar(
+                leading: const CircleAvatar(
                   backgroundColor: Colors.green,
                 ),
                 title: Padding(
@@ -184,7 +216,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
                   ),
                 ),
                 trailing: Text(
-                  DateFormat('yyyy-MM-dd').format(parcel.dateManaged),
+                  DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
                   style: const TextStyle(
                     color: Colors.black45,
                     fontSize: 16,

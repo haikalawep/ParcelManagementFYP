@@ -76,13 +76,13 @@ class _ProfileViewState extends State<ProfileView> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-        uploadImageToFirebase(context);
+        uploadImageToFirebase();
       } else {
         print('No image selected.');
       }
     });
   }
-  Future<void> uploadImageToFirebase(BuildContext context) async {
+  Future<void> uploadImageToFirebase() async {
     if (_image != null) {
       try {
         // Upload image to Firebase Storage
@@ -158,6 +158,8 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF9E5DE),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),

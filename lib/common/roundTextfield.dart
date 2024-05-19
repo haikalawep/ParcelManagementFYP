@@ -121,16 +121,17 @@ class RoundTitleTextfield extends StatelessWidget {
                         color: Colors.black87, // Customize hint text color
                         fontWeight: FontWeight.w600, // Customize hint text font weight
                       ),
+
                     ),
                   ),
                 ),
                 Container(
-                  height: 55,
-                  margin: const EdgeInsets.only(top: 10, left: 20),
+                  height: 50,
+                  margin: const EdgeInsets.only(top: 5, left: 20),
                   alignment: Alignment.topLeft,
                   child: Text(
                     title,
-                    style: TextStyle(color: TColor.placeholder, fontSize: 20),
+                    style: TextStyle(color: TColor.placeholder, fontSize: 15),
                   ),
                 )
               ],

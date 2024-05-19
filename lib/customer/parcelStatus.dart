@@ -80,9 +80,37 @@ class _ParcelStatusState extends State<ParcelStatusView> {
   }
 
 
+  void _navigateToDetailView({required Parcel parcel, required User user}) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 800),
+        reverseTransitionDuration: const Duration(milliseconds: 600),
+        pageBuilder: (_, __, ___) => StatusDetail(parcel: parcel, user: widget.user),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+          Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF9E5DE),
+
       appBar: AppBar(
         title: Text('Manage Parcel'),
         automaticallyImplyLeading: false, // Hide the back button
@@ -95,6 +123,70 @@ class _ParcelStatusState extends State<ParcelStatusView> {
         itemCount: parcelList.length,
         itemBuilder: (context, index) {
           final parcel = parcelList[index];
+
+
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.blueAccent,
+                  width: 5.0,
+                ),
+                left: BorderSide(
+                  color: Colors.blueAccent,
+                  width: 5.0,
+                ),
+              ),
+              color: Colors.white, // Ensure the container has a background color to match the Card's background
+            ),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 16,
+              ),
+              onTap: () {
+                _navigateToDetailView(parcel: parcel, user: widget.user);
+                // Navigate to the ParcelDetail page and pass the parcel object
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => HistoryDetail(parcel: parcel),
+                //   ),
+                // );
+              },
+              leading: CircleAvatar(
+                backgroundColor: Colors.red,
+              ),
+              title: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  parcel.nameR,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              subtitle: Text(
+                parcel.phoneR,
+                style: TextStyle(
+                  color: Colors.blue.shade700,
+                  fontSize: 16,
+                ),
+              ),
+              trailing: Text(
+                DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
+                style: const TextStyle(
+                  color: Colors.black45,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          );
+          
+          
           return ListTile(
             onTap: () {
               // Navigate to the ParcelDetail page and pass the parcel object

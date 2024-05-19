@@ -81,7 +81,8 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
     String code = '';
     switch (dayOfWeek) {
       case 1:
-        code = 'MD$weekNumber + 1';
+        int incrementedWeekNumber = weekNumber + 1;
+        code = 'MD$incrementedWeekNumber';
         break;
       case 2:
         code = 'TD$weekNumber';

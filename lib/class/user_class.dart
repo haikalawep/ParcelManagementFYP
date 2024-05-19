@@ -5,6 +5,7 @@ class User {
   final String email;
   final String mobile;
   final String name;
+  final String imageUrl;
 
   // Add other attributes as needed
 
@@ -13,6 +14,7 @@ class User {
     required this.email,
     required this.mobile,
     required this.name,
+    required this.imageUrl,
     // Add other attributes as needed
   });
 
@@ -23,6 +25,7 @@ class User {
         email: map['email'],
         mobile: map['mobile'],
         name: map['name'],
+        imageUrl: map['imageUrl'],
     );
   }
 
@@ -33,6 +36,7 @@ class User {
       'email': email,
       'mobile': mobile,
       'name': name,
+      'imageUrl': imageUrl,
 
     };
   }

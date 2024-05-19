@@ -59,6 +59,31 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
+  void _navigateToHistoryView({required Parcel parcel}) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 800),
+        reverseTransitionDuration: const Duration(milliseconds: 600),
+        pageBuilder: (_, __, ___) => HistoryDetail(parcel: parcel),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+          Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -74,7 +99,7 @@ class _HistoryPageState extends State<HistoryPage> {
         backgroundColor: const Color(0xFFF9E5DE),
 
         appBar: AppBar(
-          title: Text('Manage History'),
+          title: const Text('Manage History'),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(kToolbarHeight),
             child: Padding(
@@ -103,21 +128,36 @@ class _HistoryPageState extends State<HistoryPage> {
           itemCount: parcelList.length,
           itemBuilder: (context, index) {
             final parcel = parcelList[index];
-            return Card(
+            return Container(
               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0),
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.blueAccent,
+                    width: 5.0,
+                  ),
+                  left: BorderSide(
+                    color: Colors.blueAccent,
+                    width: 5.0,
+                  ),
+                ),
+                color: Colors.white, // Ensure the container has a background color to match the Card's background
+              ),
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 8,
                   horizontal: 16,
                 ),
                 onTap: () {
+                  _navigateToHistoryView(parcel: parcel);
                   // Navigate to the ParcelDetail page and pass the parcel object
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HistoryDetail(parcel: parcel),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => HistoryDetail(parcel: parcel),
+                  //   ),
+                  // );
                 },
                 leading: CircleAvatar(
                   backgroundColor: Colors.red,
@@ -140,7 +180,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                 ),
                 trailing: Text(
-                  DateFormat('yyyy-MM-dd').format(parcel.dateManaged),
+                  DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
                   style: const TextStyle(
                     color: Colors.black45,
                     fontSize: 16,

@@ -1,9 +1,13 @@
+import 'package:parcelmanagement/staff/Manage/SplashEdit.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parcelmanagement/class/parcel_class.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart'; // Import the Parcel class
+
+import 'package:qr/qr.dart';
+
 
 class ParcelDetail extends StatefulWidget {
   final Parcel parcel;
@@ -155,6 +159,10 @@ class _ParcelDetailState extends State<ParcelDetail> {
                   // Update database with new values
                   // You can call a function here to update the database
                   updateParcel();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SplashEditView()),
+                  );
                 },
                 child: Text('Edit'),
               ),
@@ -166,9 +174,163 @@ class _ParcelDetailState extends State<ParcelDetail> {
                 ),
               ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    showQRCode = !showQRCode;
-                  });
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Center(
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 36,
+                            ),
+                            height: MediaQuery.of(context).size.height * 0.60,
+                            width: MediaQuery.of(context).size.width * 0.860,
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment(0.8, 1),
+                                colors: <Color>[
+                                  Color(0xFFFEEDFC),
+                                  Colors.white,
+                                  Color(0xFFE4E6F7),
+                                  Color(0xFFE2E5F5),
+                                ],
+                                tileMode: TileMode.mirror,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  height: 340,
+                                  width: 340,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(60),
+                                    ),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment(0.8, 1),
+                                      colors: <Color>[
+                                        Colors.white,
+                                        Color(0xFFE4E6F7),
+                                        Colors.white,
+                                      ],
+                                      tileMode: TileMode.mirror,
+                                    ),
+                                  ),
+                                  child: Image.network(
+                                    qrURL, // Use the qrURL for the QR code image URL
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Recipient Generated QR Code!',
+                                      style: TextStyle(
+                                        fontFamily: 'poppins_bold',
+                                        fontSize: 30,
+                                        color: Color(0xFF6565FF),
+                                      ),
+                                    ),
+                                    Text(
+                                      "This is your unique QR code for another person to scan",
+                                      style: TextStyle(
+                                        fontFamily: 'poppins_regular',
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: const BorderRadius.all(
+                                              Radius.circular(12),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                blurRadius: 32.0,
+                                                color: const Color.fromARGB(
+                                                    255, 133, 142, 212)
+                                                    .withOpacity(0.68),
+                                              ),
+                                            ],
+                                          ),
+                                          // child: const Icon(
+                                          //   EvaIcons.shareOutline,
+                                          //   color: Color(0xFF6565FF),
+                                          // ),
+                                        ),
+                                        //const Gap(8),
+                                        const Text(
+                                          "Share",
+                                          style: TextStyle(
+                                            fontFamily: 'poppins_semi_bold',
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    //const Gap(40),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: const BorderRadius.all(
+                                              Radius.circular(12),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                blurRadius: 32.0,
+                                                color: const Color.fromARGB(
+                                                    255, 133, 142, 212)
+                                                    .withOpacity(0.68),
+                                              ),
+                                            ],
+                                          ),
+                                          // child: const Icon(
+                                          //   EvaIcons.saveOutline,
+                                          //   color: Color(0xFF6565FF),
+                                          // ),
+                                        ),
+                                        //const Gap(8),
+                                        const Text(
+                                          "Save",
+                                          style: TextStyle(
+                                            fontFamily: 'poppins_semi_bold',
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
                 child: Text(showQRCode ? 'Hide QR Code' : 'Show QR Code'),
               ),

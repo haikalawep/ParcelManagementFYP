@@ -62,7 +62,7 @@ class _RegisterViewState extends State<RegisterPage> {
         // Store user data into Firestore
         await FirebaseFirestore.instance.collection('users').doc(userEmail).set({
           'name': txtName.text,
-          'email': userEmail,
+          'email': txtEmail.text,
           'mobile': txtMobile.text,
           'college': selectedCollege,
           'imageUrl': 'https://firebasestorage.googleapis.com/v0/b/parcelfyp.appspot.com/o/defaultProfileImage.jpg?alt=media&token=73bcb7fb-96d8-4fda-a781-b61259b950c5',
@@ -152,6 +152,7 @@ class _RegisterViewState extends State<RegisterPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
+                          controller: txtName,
                         ),
                       ),
                       const SizedBox(
