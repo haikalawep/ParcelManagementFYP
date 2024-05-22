@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parcelmanagement/class/parcel_class.dart'; // Import the Parcel class
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'parcelDetail.dart'; // Import the ParcelDetail page
 
 class ManageParcelPage extends StatefulWidget {
@@ -11,23 +12,41 @@ class ManageParcelPage extends StatefulWidget {
   State<ManageParcelPage> createState() => _ManageParcelPageState();
 }
 
-class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerProviderStateMixin {
+class _ManageParcelPageState extends State<ManageParcelPage> with TickerProviderStateMixin {
   TabController? _tabController;
+  TabController? _boxTabController;
   List<Parcel> parcelList = [];
   List<Parcel> boxParcelList = [];
   List<Parcel> counterParcelList = [];
+  List<Parcel> filteredBoxParcelList = [];
+  List<Parcel> filteredCounterParcelList = [];
   bool isLoading = true;
+  TextEditingController txtSearchCounter = TextEditingController();
+  TextEditingController txtSearchBox = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _boxTabController = TabController(length: 2, vsync: this);
     fetchParcelData();
+
+    txtSearchCounter.addListener(() {
+      filterCounterParcels();
+    });
+
+    txtSearchBox.addListener(() {
+      filterBoxParcels();
+    });
+
   }
 
   @override
   void dispose() {
     _tabController!.dispose();
+    _boxTabController!.dispose();
+    txtSearchCounter.dispose();
+    txtSearchBox.dispose();
     super.dispose();
   }
 
@@ -60,6 +79,9 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
         boxParcelList = parcelList.where((parcel) => parcel.optCollect == 'Boxes').toList();
         counterParcelList = parcelList.where((parcel) => parcel.optCollect == 'Counter').toList();
 
+        filteredBoxParcelList = boxParcelList;
+        filteredCounterParcelList = counterParcelList;
+
         isLoading = false;
       });
     } catch (error) {
@@ -70,162 +92,443 @@ class _ManageParcelPageState extends State<ManageParcelPage> with SingleTickerPr
     }
   }
 
+  void filterCounterParcels() {
+    setState(() {
+      filteredCounterParcelList = counterParcelList
+          .where((parcel) => parcel.trackNo.toLowerCase().contains(txtSearchCounter.text.toLowerCase()) ||
+          parcel.nameR.toLowerCase().contains(txtSearchCounter.text.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void filterBoxParcels() {
+    setState(() {
+      filteredBoxParcelList = boxParcelList
+          .where((parcel) => parcel.trackNo.toLowerCase().contains(txtSearchBox.text.toLowerCase()) ||
+          parcel.nameR.toLowerCase().contains(txtSearchBox.text.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void _navigateToDetailView({required Parcel parcel}) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 800),
+        reverseTransitionDuration: const Duration(milliseconds: 600),
+        pageBuilder: (_, __, ___) => ParcelDetail(parcel: parcel),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+          Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9E5DE),
 
       appBar: AppBar(
-        title: Text('Manage Parcel'),
+        title: const Text('Manage Parcel'),
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(text: 'Counter'),
             Tab(text: 'Box', ),
           ],
-          labelStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.bold), // Increase font size for selected tab
-          unselectedLabelStyle: TextStyle(fontSize: 16),
+          labelStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold), // Increase font size for selected tab
+          unselectedLabelStyle: const TextStyle(fontSize: 16),
         ),
       ),
       body: isLoading
-          ? Center(
+          ? const Center(
         child: CircularProgressIndicator(),
       )
           : TabBarView(
         controller: _tabController,
         children: [
-          // Box Tab View
-          ListView.builder(
-            itemCount: counterParcelList.length,
-            itemBuilder: (context, index) {
-              final parcel = counterParcelList[index];
-              return Container(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  border: const Border(
-                    bottom: BorderSide(
-                      color: Colors.black,
-                      width: 5.0,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: RoundTextfield(
+                  hintText: "Search Parcel in Counter",
+                  controller: txtSearchCounter,
+                  left: Container(
+                    alignment: Alignment.center,
+                    width: 30,
+                    child: Image.asset(
+                      "assets/img/search.png",
+                      width: 20,
+                      height: 20,
                     ),
-                    left: BorderSide(
-                      color: Colors.black,
-                      width: 5.0,
-                    ),
-                  ),
-                  color: Colors.white, // Ensure the container has a background color to match the Card's background
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
-                  ),
-                  onTap: () {
-                    // Navigate to the ParcelDetail page and pass the parcel object
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ParcelDetail(parcel: parcel),
-                      ),
-                    );
-                  },
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.green,
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      parcel.nameR,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  subtitle: Text(
-                    parcel.phoneR,
-                    style: TextStyle(
-                      color: Colors.blue.shade700,
-                      fontSize: 16,
-                    ),
-                  ),
-                  trailing: Text(
-                    DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
-                    style: const TextStyle(
-                      color: Colors.black45,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          // Counter Tab View
-          ListView.builder(
-            itemCount: boxParcelList.length,
-            itemBuilder: (context, index) {
-              final parcel = boxParcelList[index];
-              return Container(
-              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  border: const Border(
-                    bottom: BorderSide(
-                      color: Colors.blueAccent,
-                      width: 5.0,
-                    ),
-                    left: BorderSide(
-                      color: Colors.blueAccent,
-                      width: 5.0,
-                    ),
-                  ),
-                  color: Colors.white, // Ensure the container has a background color to match the Card's background
-                ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16,
-                ),
-                onTap: () {
-                  // Navigate to the ParcelDetail page and pass the parcel object
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ParcelDetail(parcel: parcel),
-                    ),
-                  );
-                },
-                leading: const CircleAvatar(
-                  backgroundColor: Colors.green,
-                ),
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    parcel.nameR,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                subtitle: Text(
-                  parcel.phoneR,
-                  style: TextStyle(
-                    color: Colors.blue.shade700,
-                    fontSize: 16,
-                  ),
-                ),
-                trailing: Text(
-                  DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
-                  style: const TextStyle(
-                    color: Colors.black45,
-                    fontSize: 16,
                   ),
                 ),
               ),
-              );
-            },
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredCounterParcelList.length,
+                  itemBuilder: (context, index) {
+                    final parcel = filteredCounterParcelList[index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: const Border(
+                          bottom: BorderSide(
+                            color: Colors.black,
+                            width: 5.0,
+                          ),
+                          left: BorderSide(
+                            color: Colors.black,
+                            width: 5.0,
+                          ),
+                        ),
+                        color: Colors.white, // Ensure the container has a background color to match the Card's background
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 16,
+                        ),
+                        onTap: () {
+                          _navigateToDetailView(parcel: parcel);
+                          // Navigate to the ParcelDetail page and pass the parcel object
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => HistoryDetail(parcel: parcel),
+                          //   ),
+                          // );
+                        },
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
+                            children: [
+                              Text(
+                                parcel.trackNo, // Display the track number
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              const SizedBox(height: 15), // Add a small space between the track number and the name
+                              Text(
+                                parcel.nameR,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        subtitle: Text(
+                          parcel.phoneR,
+                          style: TextStyle(
+                            color: Colors.blue.shade700,
+                            fontSize: 16,
+                          ),
+                        ),
+                        trailing: Text(
+                          DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
+                          style: const TextStyle(
+                            color: Colors.black45,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: RoundTextfield(
+                  hintText: "Search Parcel in Box",
+                  controller: txtSearchBox,
+                  left: Container(
+                    alignment: Alignment.center,
+                    width: 30,
+                    child: Image.asset(
+                      "assets/img/search.png",
+                      width: 20,
+                      height: 20,
+                    ),
+                  ),
+                ),
+              ),
+              TabBar(
+                controller: _boxTabController,
+                tabs: const[
+                  Tab(text: 'Out Box'),
+                  Tab(text: 'In Box'),
+                ],
+                labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Adjust label style if needed
+                unselectedLabelStyle: const TextStyle(fontSize: 16),
+              ),
+              Expanded(
+                  child: TabBarView(
+                    controller: _boxTabController,
+                    children: [
+                      ListView.builder(
+                        itemCount: filteredBoxParcelList.where((parcel) => parcel.status == 'Out Box').length,
+                        itemBuilder: (context, index) {
+                          final parcel = filteredBoxParcelList.where((parcel) => parcel.status == 'Out Box').toList()[index];
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.0),
+                              border: const Border(
+                                bottom: BorderSide(
+                                  color: Colors.blueAccent,
+                                  width: 5.0,
+                                ),
+                                left: BorderSide(
+                                  color: Colors.blueAccent,
+                                  width: 5.0,
+                                ),
+                              ),
+                              color: Colors.white, // Ensure the container has a background color to match the Card's background
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 16,
+                              ),
+                              onTap: () {
+                                _navigateToDetailView(parcel: parcel);
+                                // Navigate to the ParcelDetail page and pass the parcel object
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => HistoryDetail(parcel: parcel),
+                                //   ),
+                                // );
+                              },
+                              title: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
+                                  children: [
+                                    Text(
+                                      parcel.trackNo, // Display the track number
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15), // Add a small space between the track number and the name
+                                    Text(
+                                      parcel.nameR,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              subtitle: Text(
+                                parcel.phoneR,
+                                style: TextStyle(
+                                  color: Colors.blue.shade700,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              trailing: Text(
+                                DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
+                                style: const TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      ListView.builder(
+                        itemCount: filteredBoxParcelList.where((parcel) => parcel.status == 'In Box').length,
+                        itemBuilder: (context, index) {
+                          final parcel = filteredBoxParcelList.where((parcel) => parcel.status == 'In Box').toList()[index];
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.0),
+                              border: const Border(
+                                bottom: BorderSide(
+                                  color: Colors.blueAccent,
+                                  width: 5.0,
+                                ),
+                                left: BorderSide(
+                                  color: Colors.blueAccent,
+                                  width: 5.0,
+                                ),
+                              ),
+                              color: Colors.white, // Ensure the container has a background color to match the Card's background
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 16,
+                              ),
+                              onTap: () {
+                                _navigateToDetailView(parcel: parcel);
+                                // Navigate to the ParcelDetail page and pass the parcel object
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => HistoryDetail(parcel: parcel),
+                                //   ),
+                                // );
+                              },
+                              title: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
+                                  children: [
+                                    Text(
+                                      parcel.trackNo, // Display the track number
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15), // Add a small space between the track number and the name
+                                    Text(
+                                      parcel.nameR,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              subtitle: Text(
+                                parcel.phoneR,
+                                style: TextStyle(
+                                  color: Colors.blue.shade700,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              trailing: Text(
+                                DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
+                                style: const TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+
+                    ],
+                  )
+              )
+
+              // Expanded(
+              //     child: ListView.builder(
+              //       itemCount: filteredBoxParcelList.length,
+              //       itemBuilder: (context, index) {
+              //         final parcel = filteredBoxParcelList[index];
+              //         return Container(
+              //           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              //           decoration: BoxDecoration(
+              //             borderRadius: BorderRadius.circular(15.0),
+              //             border: const Border(
+              //               bottom: BorderSide(
+              //                 color: Colors.blueAccent,
+              //                 width: 5.0,
+              //               ),
+              //               left: BorderSide(
+              //                 color: Colors.blueAccent,
+              //                 width: 5.0,
+              //               ),
+              //             ),
+              //             color: Colors.white, // Ensure the container has a background color to match the Card's background
+              //           ),
+              //           child: ListTile(
+              //             contentPadding: const EdgeInsets.symmetric(
+              //               vertical: 16,
+              //               horizontal: 16,
+              //             ),
+              //             onTap: () {
+              //               _navigateToDetailView(parcel: parcel);
+              //               // Navigate to the ParcelDetail page and pass the parcel object
+              //               // Navigator.push(
+              //               //   context,
+              //               //   MaterialPageRoute(
+              //               //     builder: (context) => HistoryDetail(parcel: parcel),
+              //               //   ),
+              //               // );
+              //             },
+              //             title: Padding(
+              //               padding: const EdgeInsets.symmetric(vertical: 2.0),
+              //               child: Column(
+              //                 crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
+              //                 children: [
+              //                   Text(
+              //                     parcel.trackNo, // Display the track number
+              //                     style: const TextStyle(
+              //                       fontSize: 16,
+              //                       fontWeight: FontWeight.normal,
+              //                     ),
+              //                   ),
+              //                   const SizedBox(height: 15), // Add a small space between the track number and the name
+              //                   Text(
+              //                     parcel.nameR,
+              //                     style: const TextStyle(
+              //                       fontSize: 24,
+              //                       fontWeight: FontWeight.bold,
+              //                     ),
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //             subtitle: Text(
+              //               parcel.phoneR,
+              //               style: TextStyle(
+              //                 color: Colors.blue.shade700,
+              //                 fontSize: 16,
+              //               ),
+              //             ),
+              //             trailing: Text(
+              //               DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
+              //               style: const TextStyle(
+              //                 color: Colors.black45,
+              //                 fontSize: 16,
+              //               ),
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ),
+              // ),
+            ],
+          ),
+          // Box Tab View
+          // Counter Tab View
         ],
       ),
     );

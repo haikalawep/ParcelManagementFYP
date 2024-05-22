@@ -8,4 +8,5 @@ class TColor {
   static Color get placeholder => const Color(0xffB6B7B7);
   static Color get white => const Color(0xffffffff);
   static Color get purple => const Color(0xFF4A148C);
+  static const Color primaryColor = Color(0xFF222831);
 }

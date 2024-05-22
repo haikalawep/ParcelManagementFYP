@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/staff/home_tab.dart';
-import 'package:parcelmanagement/staff/Scan/scanPage.dart';
-import 'package:parcelmanagement/view/welcomePage.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({super.key});
@@ -16,11 +14,14 @@ class SplashView extends StatelessWidget {
         MaterialPageRoute(builder: (context) => MainTabView()),
       );
     });
-    return const Scaffold(
-      backgroundColor: Color(0xFF074173),
-      body: Center(
-        child: Image(
-          image: AssetImage("assets/img/UiTM Tapah Hub Logo.jpeg"),
+
+    return const SafeArea(
+      child: Scaffold(
+        backgroundColor: TColor.primaryColor,
+        body: Center(
+          child: Image(
+            image: AssetImage("assets/img/UiTM Tapah Hub Logo.jpeg"),
+          ),
         ),
       ),
     );

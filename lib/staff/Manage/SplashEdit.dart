@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/staff/Manage/manage_detailParcel.dart';
 
 
@@ -14,11 +15,13 @@ class SplashEditView extends StatelessWidget {
         MaterialPageRoute(builder: (context) => ManageParcelPage()),
       );
     });
-    return const Scaffold(
-      backgroundColor: Color(0xFF074173),
-      body: Center(
-        child: Image(
-          image: AssetImage("assets/img/UiTM Tapah Hub Logo.jpeg"),
+    return const SafeArea(
+      child: Scaffold(
+        backgroundColor: TColor.primaryColor,
+        body: Center(
+          child: Image(
+            image: AssetImage("assets/img/UiTM Tapah Hub Logo.jpeg"),
+          ),
         ),
       ),
     );

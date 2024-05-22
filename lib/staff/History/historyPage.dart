@@ -100,9 +100,10 @@ class _HistoryPageState extends State<HistoryPage> {
 
         appBar: AppBar(
           title: const Text('Manage History'),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: Padding(
+        ),
+        body: Column(
+          children: [
+            Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: RoundTextfield(
                 hintText: "Search History",
@@ -118,78 +119,89 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
               ),
             ),
-          ),
-        ),
-        body: isLoading
-            ? Center(
-          child: Card(),
-        )
-            : ListView.builder(
-          itemCount: parcelList.length,
-          itemBuilder: (context, index) {
-            final parcel = parcelList[index];
-            return Container(
-              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.blueAccent,
-                    width: 5.0,
-                  ),
-                  left: BorderSide(
-                    color: Colors.blueAccent,
-                    width: 5.0,
-                  ),
-                ),
-                color: Colors.white, // Ensure the container has a background color to match the Card's background
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16,
-                ),
-                onTap: () {
-                  _navigateToHistoryView(parcel: parcel);
-                  // Navigate to the ParcelDetail page and pass the parcel object
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => HistoryDetail(parcel: parcel),
-                  //   ),
-                  // );
-                },
-                leading: CircleAvatar(
-                  backgroundColor: Colors.red,
-                ),
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    parcel.nameR,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+            Expanded(
+              child: isLoading
+                  ? const Center(child: Card(),)
+                  : ListView.builder(
+                itemCount: parcelList.length,
+                itemBuilder: (context, index) {
+                  final parcel = parcelList[index];
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      border: const Border(
+                        bottom: BorderSide(
+                          color: Colors.blueAccent,
+                          width: 5.0,
+                        ),
+                        left: BorderSide(
+                          color: Colors.blueAccent,
+                          width: 5.0,
+                        ),
+                      ),
+                      color: Colors.white, // Ensure the container has a background color to match the Card's background
                     ),
-                  ),
-                ),
-                subtitle: Text(
-                  parcel.phoneR,
-                  style: TextStyle(
-                    color: Colors.blue.shade700,
-                    fontSize: 16,
-                  ),
-                ),
-                trailing: Text(
-                  DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
-                  style: const TextStyle(
-                    color: Colors.black45,
-                    fontSize: 16,
-                  ),
-                ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
+                      ),
+                      onTap: () {
+                        _navigateToHistoryView(parcel: parcel);
+                        // Navigate to the ParcelDetail page and pass the parcel object
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => HistoryDetail(parcel: parcel),
+                        //   ),
+                        // );
+                      },
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
+                          children: [
+                            Text(
+                              parcel.trackNo, // Display the track number
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            const SizedBox(height: 15), // Add a small space between the track number and the name
+                            Text(
+                              parcel.nameR,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      subtitle: Text(
+                        parcel.phoneR,
+                        style: TextStyle(
+                          color: Colors.blue.shade700,
+                          fontSize: 16,
+                        ),
+                      ),
+                      trailing: Text(
+                        DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
+                        style: const TextStyle(
+                          color: Colors.black45,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         ),
+
 
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:parcelmanagement/class/sMessage_class.dart';
 import 'package:parcelmanagement/staff/Manage/SplashEdit.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,9 @@ class _ParcelDetailState extends State<ParcelDetail> {
   String qrURL = '';
   bool showQRCode = false;
 
+  List<String> statusOptions = ['In Box', 'Out Box'];
+  String selectedStatus = '';
+
   TextEditingController _nameController = TextEditingController();
   TextEditingController _dateManagedController = TextEditingController();
   TextEditingController _codeController = TextEditingController();
@@ -44,7 +48,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
     _colorController.text = widget.parcel.color;
     _optCollectController.text = widget.parcel.optCollect;
     _sizeController.text = widget.parcel.size;
-    _statusController.text = widget.parcel.status;
+    selectedStatus = widget.parcel.status;
     _phoneController.text = widget.parcel.phoneR;
     _parcelNoController.text = widget.parcel.parcelNo.toString();
     _chargeController.text = widget.parcel.charge.toString();
@@ -121,12 +125,29 @@ class _ParcelDetailState extends State<ParcelDetail> {
                   controller: _sizeController,
                 ),
               ),
-              Padding(
+              if (widget.parcel.optCollect == 'Boxes')
+                Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: RoundTitleTextfield(
-                  title: "Status",
-                  hintText: "Enter Status",
-                  controller: _statusController,
+                child: DropdownButtonFormField<String>(
+                  value: selectedStatus,
+                  items: statusOptions.map((String status) {
+                    return DropdownMenuItem<String>(
+                      value: status,
+                      child: Text(status),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      // Update the selected status
+                      setState(() {
+                        selectedStatus = newValue;
+                      });
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Status',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
               Padding(
@@ -366,6 +387,31 @@ class _ParcelDetailState extends State<ParcelDetail> {
     }
   }
 
+  void sendMessage(int parcelNo, String messageText) {
+    // Create a message object
+    StaffMessage message = StaffMessage(
+      sMessage: messageText,
+      parcelNo: parcelNo,
+      datesMessage: Timestamp.now(),
+    );
+
+    // Get a reference to the messages collection
+    CollectionReference messagesRef = FirebaseFirestore.instance.collection('staffMessages');
+
+    String docId = 'staffMessage_$parcelNo';
+
+    // Add the message document to Firestore
+    messagesRef.doc(docId).set(message.toMap()).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Request message sent successfully')),
+      );
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to send message')),
+      );
+    });
+  }
+
   void updateParcel() {
     // Get updated values from controllers
     String newName = _nameController.text;
@@ -373,7 +419,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
     String newColor = _colorController.text;
     String newOptCollect = _optCollectController.text;
     String newSize = _sizeController.text;
-    String newStatus = _statusController.text;
+    String newStatus = selectedStatus;
     String newPhone = _phoneController.text;
     String newParcelNo = _parcelNoController.text;
     String newCharge = _chargeController.text;
@@ -413,6 +459,10 @@ class _ParcelDetailState extends State<ParcelDetail> {
         parcelRef
             .update(updatedData)
             .then((value) {
+          if (newStatus == 'In Box') {
+            // Send message if optCollect is "Box"
+            sendMessage(widget.parcel.parcelNo, 'your parcel ready to be collected at box');
+          }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Parcel updated successfully')),
           );

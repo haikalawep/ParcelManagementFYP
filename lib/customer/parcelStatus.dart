@@ -105,31 +105,28 @@ class _ParcelStatusState extends State<ParcelStatusView> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9E5DE),
 
       appBar: AppBar(
-        title: Text('Manage Parcel'),
+        title: const Text('Parcel Detail'),
         automaticallyImplyLeading: false, // Hide the back button
       ),
       body: isLoading
-          ? Center(
+          ? const Center(
         child: CircularProgressIndicator(),
       )
           : ListView.builder(
         itemCount: parcelList.length,
         itemBuilder: (context, index) {
           final parcel = parcelList[index];
-
-
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
-              border: Border(
+              border: const Border(
                 bottom: BorderSide(
                   color: Colors.blueAccent,
                   width: 5.0,
@@ -143,7 +140,7 @@ class _ParcelStatusState extends State<ParcelStatusView> {
             ),
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(
-                vertical: 8,
+                vertical: 16,
                 horizontal: 16,
               ),
               onTap: () {
@@ -156,17 +153,27 @@ class _ParcelStatusState extends State<ParcelStatusView> {
                 //   ),
                 // );
               },
-              leading: CircleAvatar(
-                backgroundColor: Colors.red,
-              ),
               title: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  parcel.nameR,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
+                  children: [
+                    Text(
+                      parcel.trackNo, // Display the track number
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    const SizedBox(height: 15), // Add a small space between the track number and the name
+                    Text(
+                      parcel.nameR,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               subtitle: Text(
@@ -184,27 +191,6 @@ class _ParcelStatusState extends State<ParcelStatusView> {
                 ),
               ),
             ),
-          );
-          
-          
-          return ListTile(
-            onTap: () {
-              // Navigate to the ParcelDetail page and pass the parcel object
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StatusDetail(parcel: parcel, user: widget.user),
-                ),
-              );
-            },
-            leading: CircleAvatar(
-              backgroundColor: Colors.red,
-            ),
-            title: Text(parcel.nameR),
-            subtitle: Text(
-              DateFormat('yyyy-MM-dd').format(parcel.dateManaged),
-            ),
-            trailing: Icon(Icons.chevron_right),
           );
         },
       ),

@@ -69,93 +69,104 @@ class _CollectViewState extends State<CollectView> {
         );
         return false;
       },
-    child: Scaffold(
-      backgroundColor: const Color(0xFFF9E5DE),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF9E5DE),
 
-      appBar: AppBar(
-        title: Text('Collect'),
-      ),
-      body: Center(
-        child: Column(
+        appBar: AppBar(
+          title: const Text('Collect'),
+        ),
+        body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: RoundTextfield(
-                hintText: "Search Recipient",
-                controller: txtSearch,
-                left: Container(
-                  alignment: Alignment.center,
-                  width: 30,
-                  child: Image.asset(
-                    "assets/img/search.png",
-                    width: 20,
-                    height: 20,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: RoundTextfield(
+                  hintText: "Search Recipient",
+                  controller: txtSearch,
+                  left: Container(
+                    alignment: Alignment.center,
+                    width: 30,
+                    child: Image.asset(
+                      "assets/img/search.png",
+                      width: 20,
+                      height: 20,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-                padding: EdgeInsets.all(16),
-                margin: EdgeInsets.only(top: 40),
-                child: Center(
-                    child: Text(
-                      '$parcelsCollectedToday PARCELS COLLECTED TODAY',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
+              Container(
+                  padding: EdgeInsets.all(16),
+                  margin: EdgeInsets.only(top: 40),
+                  child: Center(
+                      child: Text(
+                        '$parcelsCollectedToday PARCELS COLLECTED TODAY',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                  ),
+                ),
+
+
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to the TestQR page when the button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SplashView()),
+                  );
+                },
+                child: Text('Scan QR'),
+                style: ButtonStyle(
                 ),
               ),
-
-
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the TestQR page when the button is pressed
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SplashView()),
-                );
-              },
-              child: Text('Scan QR'),
-              style: ButtonStyle(
+              Center(
+                child: Container(
+                  height: 200,
+                  width: 200,
+                ),
               ),
-            ),
-            Center(
-              child: Container(
-                height: 200,
-                width: 200,
+            ],
+          ),
+
+        floatingActionButton: ElevatedButton(
+          onPressed: () async {
+            // Navigate to ParcelDetailView and wait for result
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ParcelCollectPage(),
               ),
-            ),
-
-          ],
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            shape: CircleBorder(), backgroundColor: Colors.white,
+            padding: EdgeInsets.all(16), // Change to your desired background color
+          ),
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Scan Here',
+                style: TextStyle(
+                  color: Colors.black, // Adjust the text color to contrast with the background
+                  fontSize: 12, // Adjust the text size if necessary
+                ),
+              ),
+              SizedBox(height: 4), // Add some space between the icon and text
+              Icon(
+                Icons.qr_code,
+                size: 70, // Adjust the size if necessary
+                color: Colors.black, // Adjust the color if necessary
+              ),
+            ],
+          ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
-
-      floatingActionButton: ElevatedButton(
-        onPressed: () async {
-          // Navigate to ParcelDetailView and wait for result
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ParcelCollectPage(),
-            ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          shape: CircleBorder(), backgroundColor: Colors.blue,
-          padding: EdgeInsets.all(8), // Change to your desired background color
-        ),
-        child: Image.asset(
-          "assets/img/scan.png",
-          width: 40,
-          height: 40,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    ),
     );
 
   }

@@ -115,38 +115,22 @@ class _ScanViewState extends State<ScanView> {
               elevation: 0,
               actions: [
                 IconButton(
-                  icon: Icon(Icons.logout),
+                  icon: const Icon(Icons.logout),
                   onPressed: () {
                     signUserOut(context);
                   }
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: RoundTextfield(
-                hintText: "Search Recipient",
-                controller: txtSearch,
-                left: Container(
-                  alignment: Alignment.center,
-                  width: 30,
-                  child: Image.asset(
-                    "assets/img/search.png",
-                    width: 20,
-                    height: 20,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 40),
+
+            const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Center(
                 child: Text(
                   "$numberOfParcelsToday Parcels Scanned Today",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -172,11 +156,11 @@ class _ScanViewState extends State<ScanView> {
                         height: 120, // Adjust the height as needed
                         child: Card(
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Total Recipients',
                                   style: TextStyle(
                                     fontSize: 15,
@@ -187,7 +171,7 @@ class _ScanViewState extends State<ScanView> {
                                 Center(
                                   child: Text(
                                     '$numberOfRecipients',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 26,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -219,7 +203,7 @@ class _ScanViewState extends State<ScanView> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Parcels Hold',
                                   style: TextStyle(
                                     fontSize: 15,
@@ -230,7 +214,7 @@ class _ScanViewState extends State<ScanView> {
                                 Center( // Center horizontally and vertically
                                   child: Text(
                                     '$numberOfParcels',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 26,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -260,13 +244,27 @@ class _ScanViewState extends State<ScanView> {
             );
           },
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(), backgroundColor: Colors.blue,
-            padding: EdgeInsets.all(8), // Change to your desired background color
+            shape: CircleBorder(), backgroundColor: Colors.white,
+            padding: EdgeInsets.all(16), // Change to your desired background color
           ),
-          child: Image.asset(
-            "assets/img/scan.png",
-            width: 40,
-            height: 40,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Scan Here',
+                style: TextStyle(
+                  color: Colors.black, // Adjust the text color to contrast with the background
+                  fontSize: 12, // Adjust the text size if necessary
+                ),
+              ),
+              const SizedBox(height: 4), // Add some space between the icon and text
+              Image.asset(
+                "assets/img/scan.png",
+                width: 70,
+                height: 70,
+              ),
+            ],
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

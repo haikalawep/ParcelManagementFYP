@@ -22,6 +22,7 @@ class _MainTabViewState extends State<MainTabView> {
   void initState() {
     super.initState();
     selectedPageView = const ScanView(); // Default page
+
   }
 
   @override

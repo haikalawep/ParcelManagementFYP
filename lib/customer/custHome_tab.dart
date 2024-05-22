@@ -27,7 +27,7 @@ class _CustTabViewState extends State<CustTabView> {
           child: selectPageView,
         ),
       ),
-      backgroundColor: const Color(0xfff5f5f5),
+      backgroundColor: const Color(0x00000fff),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -44,9 +44,9 @@ class _CustTabViewState extends State<CustTabView> {
         child: const Icon(Icons.home),
       ),//*/
       bottomNavigationBar: BottomAppBar(
-        elevation: 10,
-        notchMargin: 12,
-        height: 74,
+        //elevation: 8,
+        notchMargin: 9,
+        height: 100,
         shape: const CircularNotchedRectangle(),
         child: SafeArea(
           child: Padding(

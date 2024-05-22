@@ -36,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
         // Check if the user's email matches the specified emails
         String userEmail = userCredential.user!.email!;
 
-        if (userEmail == 'haikal.awep@gmail.com' || userEmail == 'haikalarif02@gmail.com') {
+        if (userEmail == 'haikal.awep@gmail.com' || userEmail == 'haikalarif@gmail.com') {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => MainTabView()),

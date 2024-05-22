@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:parcelmanagement/class/cMessage_class.dart';
 import 'package:parcelmanagement/class/parcel_class.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'package:parcelmanagement/customer/SplashUpdate.dart'; // Import the Parcel class
@@ -173,6 +174,7 @@ class _StatusDetailState extends State<StatusDetail> {
                   ElevatedButton(
                     onPressed: () {
                       updateParcel();
+
                       // Navigate to SplashView
                       Navigator.pushReplacement(
                         context,
@@ -357,14 +359,42 @@ class _StatusDetailState extends State<StatusDetail> {
 
   }
 
+  void sendMessage(int parcelNo, String messageText) {
+    // Create a message object
+    Message message = Message(
+      message: messageText,
+      parcelNo: parcelNo,
+      datecMessage: Timestamp.now(),
+    );
+
+    // Get a reference to the messages collection
+    CollectionReference messagesRef = FirebaseFirestore.instance.collection('cMessages');
+
+    String docId = 'message_$parcelNo';
+
+    // Add the message document to Firestore
+    messagesRef.doc(docId).set(message.toMap()).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Request message sent successfully')),
+      );
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to send message')),
+      );
+    });
+  }
+
   void updateParcel() {
     // Get updated values
     String newOptCollect = selectedCollect ?? '';
+    String newStatus = 'Out Box';
 
     // Create a map of updated values
     Map<String, dynamic> updatedData = {
       'optCollect': newOptCollect,
+      'status' : newStatus,
     };
+
 
     // Get a reference to the Firestore collection
     CollectionReference parcelsRef =
@@ -388,6 +418,10 @@ class _StatusDetailState extends State<StatusDetail> {
         parcelRef
             .update(updatedData)
             .then((value) {
+          if (newOptCollect == 'Boxes') {
+            // Send message if optCollect is "Box"
+            sendMessage(widget.parcel.parcelNo, 'request to collect parcel at box');
+          }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Parcel updated successfully')),
           );

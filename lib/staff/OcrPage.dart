@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:parcelmanagement/staff/ResultScreen.dart';
 import 'package:parcelmanagement/staff/Scan/parcelInsert.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -74,14 +73,6 @@ class _OCRPageState extends State<OCRPage> with WidgetsBindingObserver {
                       child: Stack(
                         children: [
                           CameraPreview(_cameraController!),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.red, // Border color
-                                width: 4, // Border width
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     );

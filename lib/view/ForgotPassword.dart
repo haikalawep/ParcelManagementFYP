@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'package:parcelmanagement/common/round_Button.dart';
+import 'package:parcelmanagement/view/OtpPage.dart';
 import 'package:parcelmanagement/view/loginPage.dart';
 
 class ForgotPasswordView extends StatefulWidget {
@@ -14,6 +15,7 @@ class ForgotPasswordView extends StatefulWidget {
 
 class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   TextEditingController txtEmail = TextEditingController();
+  EmailOTP myauth = EmailOTP();
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +63,27 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               ),
 
               RoundButton(title: "Send", onPressed: () async {
-                ScaffoldMessenger.of(context)
+                myauth.setConfig(
+                    appEmail: "contact@hdevcoder.com",
+                    appName: "Email OTP",
+                    userEmail: txtEmail.text,
+                    otpLength: 4,
+                    otpType: OTPType.digitsOnly);
+                if (await myauth.sendOTP() == true) {
+                  ScaffoldMessenger.of(context)
                       .showSnackBar(const SnackBar(
                     content: Text("OTP has been sent"),
                   ));
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>   LoginView()));
-
+                          builder: (context) =>   OtpScreen(myauth: myauth, email: txtEmail.text,)));
+                } else {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(
+                    content: Text("Oops, OTP send failed"),
+                  ));
+                }
 
               }),
 
@@ -79,5 +93,5 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       ),
     );
   }
-
+//OtpScreen(myauth: myauth, email: txtEmail.text,)));
 }
