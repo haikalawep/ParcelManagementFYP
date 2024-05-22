@@ -22,6 +22,7 @@ class ParcelDetail extends StatefulWidget {
 class _ParcelDetailState extends State<ParcelDetail> {
   String qrURL = '';
   bool showQRCode = false;
+  DateTime? retrievalDate;
 
   List<String> statusOptions = ['In Box', 'Out Box'];
   String selectedStatus = '';
@@ -55,6 +56,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
     _trackNoController.text = widget.parcel.trackNo;
 
     retrieveQRCode(); // Call retrieveQRCode method here
+    retrieveRetrievalDate();
   }
 
   @override
@@ -362,6 +364,28 @@ class _ParcelDetailState extends State<ParcelDetail> {
     );
   }
 
+  Future<void> retrieveRetrievalDate() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('cMessages')
+          .where('parcelNo', isEqualTo: widget.parcel.parcelNo)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        Map<String, dynamic> cMessageData = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        setState(() {
+          retrievalDate = (cMessageData['retrievalDate'] as Timestamp).toDate();
+        });
+      } else {
+        print('cMessage not found in Firestore');
+      }
+    } catch (e) {
+      print('Error retrieving retrieval date: $e');
+    }
+  }
+
+
   Future<void> retrieveQRCode() async {
     try {
       // Query Firestore to fetch the parcel document based on parcel details
@@ -393,6 +417,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
       sMessage: messageText,
       parcelNo: parcelNo,
       datesMessage: Timestamp.now(),
+      confirmRetrievalDate: retrievalDate,
     );
 
     // Get a reference to the messages collection
@@ -421,8 +446,8 @@ class _ParcelDetailState extends State<ParcelDetail> {
     String newSize = _sizeController.text;
     String newStatus = selectedStatus;
     String newPhone = _phoneController.text;
-    String newParcelNo = _parcelNoController.text;
-    String newCharge = _chargeController.text;
+    int newParcelNo = int.parse(_parcelNoController.text);
+    int newCharge = int.parse(_chargeController.text);
     String newTrackNo = _trackNoController.text;
 
     // Create a map of updated values

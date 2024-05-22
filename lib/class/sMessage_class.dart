@@ -4,11 +4,13 @@ class StaffMessage {
   final String sMessage;
   final int parcelNo;
   final Timestamp datesMessage;
+  final DateTime? confirmRetrievalDate;
 
   StaffMessage({
     required this.sMessage,
     required this.parcelNo,
     required this.datesMessage,
+    this.confirmRetrievalDate,
   });
 
   // Method to convert a Message object to a map
@@ -17,6 +19,7 @@ class StaffMessage {
       'message': sMessage,
       'parcelNo': parcelNo,
       'timestamp': datesMessage,
+      'confirmRetrievalDate': confirmRetrievalDate,
     };
   }
 
@@ -26,6 +29,7 @@ class StaffMessage {
       sMessage: map['message'] ?? '',
       parcelNo: map['parcelNo'] ?? 0,
       datesMessage: map['timestamp'] ?? Timestamp.now(),
+      confirmRetrievalDate: map['confirmRetrievalDate'],
     );
   }
 
@@ -36,6 +40,7 @@ class StaffMessage {
       sMessage: data['message'] ?? '',
       parcelNo: data['parcelNo'] ?? 0,
       datesMessage: data['timestamp'] ?? Timestamp.now(),
+      confirmRetrievalDate: data['confirmRetrievalDate'],
     );
   }
 }

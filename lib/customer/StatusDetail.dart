@@ -22,11 +22,12 @@ class _StatusDetailState extends State<StatusDetail> {
   bool showQRCode = false;
 
   TextEditingController _optCollectController = TextEditingController();
-
+  TextEditingController _dateController = TextEditingController();
   TextEditingController _qrController = TextEditingController();
 
 
   String? selectedCollect;
+  DateTime? retrievalDate;
 
   final List<String> collect = ['Counter', 'Boxes'];
 
@@ -35,7 +36,6 @@ class _StatusDetailState extends State<StatusDetail> {
     super.initState();
 
     _optCollectController.text = widget.parcel.optCollect;
-
     _qrController.text = widget.parcel.qrURL;
 
     retrieveQRCode();
@@ -131,6 +131,32 @@ class _StatusDetailState extends State<StatusDetail> {
                     ),
                   ),
 
+                  if (selectedCollect == 'Boxes')
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: TextFormField(
+                        controller: _dateController,
+                        decoration: const InputDecoration(
+                          labelText: "Date of Parcel Retrieval",
+                          border: OutlineInputBorder(),
+                        ),
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2101),
+                          );
+                          if (pickedDate != null) {
+                            setState(() {
+                              retrievalDate = pickedDate;
+                              _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                            });
+                          }
+                        },
+                      ),
+                    ),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
@@ -166,7 +192,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Charge",
-                      hintText: widget.parcel.dateManaged.toString(),
+                      hintText: widget.parcel.charge.toString(),
                       enabled: false,
                     ),
                   ),
@@ -359,12 +385,13 @@ class _StatusDetailState extends State<StatusDetail> {
 
   }
 
-  void sendMessage(int parcelNo, String messageText) {
+  void sendMessage(int parcelNo, String messageText, {DateTime? retrievalDate}) {
     // Create a message object
     Message message = Message(
       message: messageText,
       parcelNo: parcelNo,
       datecMessage: Timestamp.now(),
+      retrievalDate: retrievalDate != null ? Timestamp.fromDate(retrievalDate) : null,
     );
 
     // Get a reference to the messages collection
@@ -418,9 +445,9 @@ class _StatusDetailState extends State<StatusDetail> {
         parcelRef
             .update(updatedData)
             .then((value) {
-          if (newOptCollect == 'Boxes') {
+          if (newOptCollect == 'Boxes' && retrievalDate != null) {
             // Send message if optCollect is "Box"
-            sendMessage(widget.parcel.parcelNo, 'request to collect parcel at box');
+            sendMessage(widget.parcel.parcelNo, 'request to collect parcel at box', retrievalDate: retrievalDate);
           }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Parcel updated successfully')),

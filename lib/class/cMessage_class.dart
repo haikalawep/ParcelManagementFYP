@@ -4,11 +4,13 @@ class Message {
   final String message;
   final int parcelNo;
   final Timestamp datecMessage;
+  final Timestamp? retrievalDate;
 
   Message({
     required this.message,
     required this.parcelNo,
     required this.datecMessage,
+    this.retrievalDate,
   });
 
   // Method to convert a Message object to a map
@@ -17,6 +19,7 @@ class Message {
       'message': message,
       'parcelNo': parcelNo,
       'timestamp': datecMessage,
+      'retrievalDate': retrievalDate,
     };
   }
 
@@ -26,6 +29,7 @@ class Message {
       message: map['message'] ?? '',
       parcelNo: map['parcelNo'] ?? 0,
       datecMessage: map['timestamp'] ?? Timestamp.now(),
+      retrievalDate: map['retrievalDate'],
     );
   }
 
@@ -36,6 +40,7 @@ class Message {
       message: data['message'] ?? '',
       parcelNo: data['parcelNo'] ?? 0,
       datecMessage: data['timestamp'] ?? Timestamp.now(),
+      retrievalDate: data['retrievalDate'],
     );
   }
 }
