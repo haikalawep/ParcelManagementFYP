@@ -24,6 +24,7 @@ class HistoryDetail extends StatelessWidget {
                 child: RoundTitleTextfield(
                   title: "Parcel Name",
                   hintText: parcel.nameR,
+                  enabled: false,
                   //hintStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -33,6 +34,7 @@ class HistoryDetail extends StatelessWidget {
                     child: RoundTitleTextfield(
                       title: "Code",
                       hintText: parcel.code,
+                      enabled: false,
                       //hintStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -43,6 +45,7 @@ class HistoryDetail extends StatelessWidget {
                     child: RoundTitleTextfield(
                       title: "Parcel No",
                       hintText: parcel.parcelNo.toString(),
+                      enabled: false,
                       //hintStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -57,6 +60,7 @@ class HistoryDetail extends StatelessWidget {
                     child: RoundTitleTextfield(
                       title: "Date Managed",
                       hintText: DateFormat('yyyy-MM-dd').format(parcel.dateManaged),
+                      enabled: false,
                     ),
                   ),
                   const SizedBox(
@@ -66,6 +70,7 @@ class HistoryDetail extends StatelessWidget {
                     child: RoundTitleTextfield(
                       title: "Collect Option",
                       hintText: parcel.optCollect,
+                      enabled: false,
                     ),
                   ),
                 ],
@@ -75,6 +80,7 @@ class HistoryDetail extends StatelessWidget {
                 child: RoundTitleTextfield(
                   title: "Color",
                   hintText: parcel.color,
+                  enabled: false,
                 ),
               ),
               Padding(
@@ -82,6 +88,7 @@ class HistoryDetail extends StatelessWidget {
                 child: RoundTitleTextfield(
                   title: "Size",
                   hintText: parcel.size,
+                  enabled: false,
                 ),
               ),
               Padding(
@@ -89,6 +96,7 @@ class HistoryDetail extends StatelessWidget {
                 child: RoundTitleTextfield(
                   title: "Status",
                   hintText: parcel.status,
+                  enabled: false,
                 ),
               ),
               Padding(
@@ -96,13 +104,15 @@ class HistoryDetail extends StatelessWidget {
                 child: RoundTitleTextfield(
                   title: "Phone Number",
                   hintText: parcel.phoneR,
+                  enabled: false,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: RoundTitleTextfield(
                   title: "Charge",
-                  hintText: parcel.charge.toString(),
+                  hintText: 'RM ${parcel.charge.toString()}',
+                  enabled: false,
                 ),
               ),
 

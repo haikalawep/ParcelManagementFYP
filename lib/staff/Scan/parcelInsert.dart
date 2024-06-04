@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -207,7 +208,7 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
         'trackNo': trackNumber, // Store the current date
       });
 
-      String qrData = '$newParcelNo';
+      String qrData = generateUniqueID();
       String qrURL = await generateQRCode(qrData);
 
       // Update Firestore with the QR code URL
@@ -227,6 +228,17 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
         SnackBar(content: Text('Insert Failed: $e')),
       );
     }
+  }
+
+  String generateUniqueID() {
+    Random random = Random();
+    String newID;
+
+    // Generate a random 7-digit number
+    int randomNumber = random.nextInt(9000000) + 1000000; // Generates a number between 1000000 and 9999999
+    newID = randomNumber.toString();
+
+    return newID;
   }
 
   Future<int> getLastParcelNumber() async {

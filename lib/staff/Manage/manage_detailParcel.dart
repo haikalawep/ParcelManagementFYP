@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parcelmanagement/class/parcel_class.dart'; // Import the Parcel class
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'parcelDetail.dart'; // Import the ParcelDetail page
 
@@ -38,7 +39,6 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
     txtSearchBox.addListener(() {
       filterBoxParcels();
     });
-
   }
 
   @override
@@ -138,10 +138,11 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9E5DE),
+      backgroundColor: TColor.background,
 
       appBar: AppBar(
         title: const Text('Manage Parcel'),
+        backgroundColor: TColor.topBar,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -283,6 +284,12 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                 ],
                 labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Adjust label style if needed
                 unselectedLabelStyle: const TextStyle(fontSize: 16),
+                indicator: BoxDecoration(
+                  color: TColor.topBar, // Set the desired background color
+                  borderRadius: BorderRadius.circular(15), // Optional: adjust the border radius
+                ),
+                indicatorSize: TabBarIndicatorSize.tab, // or TabBarIndicatorSize.label, depending on your preference
+                indicatorWeight: 5,
               ),
               Expanded(
                   child: TabBarView(
@@ -369,6 +376,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                         itemCount: filteredBoxParcelList.where((parcel) => parcel.status == 'In Box').length,
                         itemBuilder: (context, index) {
                           final parcel = filteredBoxParcelList.where((parcel) => parcel.status == 'In Box').toList()[index];
+                          bool isDateAfterNow = parcel.dateManaged.isAfter(DateTime.now());
                           return Container(
                             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                             decoration: BoxDecoration(
@@ -400,6 +408,9 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                                 //   ),
                                 // );
                               },
+                              leading: isDateAfterNow
+                                ? const Icon(Icons.circle, color: Colors.green, size: 30)
+                                : const Icon(Icons.circle, color: Colors.red, size: 30),
                               title: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 2.0),
                                 child: Column(

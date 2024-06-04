@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parcelmanagement/class/parcel_class.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'package:parcelmanagement/staff/History/historyDetail.dart';
 import 'package:parcelmanagement/staff/home_tab.dart';
@@ -96,10 +97,11 @@ class _HistoryPageState extends State<HistoryPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9E5DE),
+        backgroundColor: TColor.background,
 
         appBar: AppBar(
           title: const Text('Manage History'),
+          backgroundColor: TColor.topBar,
         ),
         body: Column(
           children: [

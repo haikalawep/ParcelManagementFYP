@@ -8,6 +8,7 @@ import 'package:parcelmanagement/staff/OcrPage.dart';
 import 'package:parcelmanagement/staff/home_tab.dart';
 import 'package:parcelmanagement/staff/Scan/parcelInsert.dart';
 import 'package:parcelmanagement/staff/homepage.dart';
+import 'package:parcelmanagement/staff/open_box.dart';
 import 'package:parcelmanagement/view/loginPage.dart';
 import '../../common/roundTextfield.dart';
 
@@ -103,7 +104,7 @@ class _ScanViewState extends State<ScanView> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9E5DE),
+        backgroundColor: TColor.background,
 
         body: isLoading
             ? Center(child: CircularProgressIndicator()) // Show loading indicator if data is still loading
@@ -111,7 +112,7 @@ class _ScanViewState extends State<ScanView> {
           children: [
             AppBar(
               title: const Text("Notify"),
-              backgroundColor: TColor.white,
+              backgroundColor: TColor.topBar,
               elevation: 0,
               actions: [
                 IconButton(
@@ -155,6 +156,7 @@ class _ScanViewState extends State<ScanView> {
                       child: Container(
                         height: 120, // Adjust the height as needed
                         child: Card(
+                          color: TColor.topBar,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -198,6 +200,7 @@ class _ScanViewState extends State<ScanView> {
                       child: Container(
                         height: 120, // Adjust the height as needed
                         child: Card(
+                          color: TColor.topBar,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Column(
@@ -230,6 +233,30 @@ class _ScanViewState extends State<ScanView> {
                 ],
               ),
             ),
+            SizedBox(height: 20),
+            Center(
+              child: Container(
+                width: 200, // Set the width
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the TestQR page when the button is pressed
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ServoControlApp()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: TColor.button, // Set the text color here
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                    ),
+                  ),
+                  child: const Text('Control Box'),
+                ),
+              ),
+            ),
           ],
         ),
         floatingActionButton: ElevatedButton(
@@ -244,7 +271,7 @@ class _ScanViewState extends State<ScanView> {
             );
           },
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(), backgroundColor: Colors.white,
+            shape: CircleBorder(), backgroundColor: TColor.button,
             padding: EdgeInsets.all(16), // Change to your desired background color
           ),
           child: Column(
@@ -254,7 +281,7 @@ class _ScanViewState extends State<ScanView> {
               const Text(
                 'Scan Here',
                 style: TextStyle(
-                  color: Colors.black, // Adjust the text color to contrast with the background
+                  color: Colors.white, // Adjust the text color to contrast with the background
                   fontSize: 12, // Adjust the text size if necessary
                 ),
               ),

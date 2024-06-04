@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/customer/custHome_tab.dart';
 import 'package:parcelmanagement/staff/OcrPage.dart';
 import 'package:parcelmanagement/staff/home_tab.dart';
 import 'package:parcelmanagement/staff/Collect/parcelCollect.dart';
+import 'package:parcelmanagement/staff/open_box.dart';
 import 'package:parcelmanagement/view/SplashWelcome.dart';
+import 'package:parcelmanagement/view/loginPage.dart';
 
 import '../../common/roundTextfield.dart';
 
@@ -58,6 +62,14 @@ class _CollectViewState extends State<CollectView> {
     }
   }
 
+  void signUserOut(BuildContext context) {
+    FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginView()), // Replace LoginPage with the appropriate class for your login page
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -70,10 +82,20 @@ class _CollectViewState extends State<CollectView> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9E5DE),
+        backgroundColor: TColor.background,
 
         appBar: AppBar(
           title: const Text('Collect'),
+          backgroundColor: TColor.topBar,
+          elevation: 0,
+          actions: [
+            IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  signUserOut(context);
+                }
+            ),
+          ],
         ),
         body: Column(
           children: [
@@ -107,21 +129,6 @@ class _CollectViewState extends State<CollectView> {
                       ),
                   ),
                 ),
-
-
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to the TestQR page when the button is pressed
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SplashView()),
-                  );
-                },
-                child: Text('Scan QR'),
-                style: ButtonStyle(
-                ),
-              ),
               Center(
                 child: Container(
                   height: 200,

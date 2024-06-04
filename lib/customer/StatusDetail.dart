@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parcelmanagement/class/cMessage_class.dart';
 import 'package:parcelmanagement/class/parcel_class.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'package:parcelmanagement/customer/SplashUpdate.dart'; // Import the Parcel class
 
@@ -29,7 +30,7 @@ class _StatusDetailState extends State<StatusDetail> {
   String? selectedCollect;
   DateTime? retrievalDate;
 
-  final List<String> collect = ['Counter', 'Boxes'];
+  final List<String> collectOptions = ['Counter', 'Boxes'];
 
   @override
   void initState() {
@@ -37,6 +38,10 @@ class _StatusDetailState extends State<StatusDetail> {
 
     _optCollectController.text = widget.parcel.optCollect;
     _qrController.text = widget.parcel.qrURL;
+    selectedCollect = widget.parcel.optCollect;
+    _dateController.text = widget.parcel.dateManaged != null
+        ? DateFormat('yyyy-MM-dd').format(widget.parcel.dateManaged!)
+        : '';
 
     retrieveQRCode();
   }
@@ -51,10 +56,11 @@ class _StatusDetailState extends State<StatusDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9E5DE),
+      backgroundColor: TColor.background,
 
       appBar: AppBar(
         title: Text('Parcel Details'),
+        backgroundColor: TColor.topBar,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -75,27 +81,61 @@ class _StatusDetailState extends State<StatusDetail> {
                       enabled: false,
                     ),
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RoundTitleTextfield(
+                          title: "Code",
+                          hintText: widget.parcel.code,
+                          enabled: false,
+                          //hintStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: RoundTitleTextfield(
+                          title: "Parcel No",
+                          hintText: widget.parcel.parcelNo.toString(),
+                          enabled: false,
+                          //hintStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10, // Adjust the height value to set the desired gap
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RoundTitleTextfield(
+                          title: "Date Managed",
+                          hintText: DateFormat('yyyy-MM-dd').format(widget.parcel.dateManaged),
+                          enabled: false,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: RoundTitleTextfield(
+                          title: "Phone Number",
+                          hintText: widget.parcel.phoneR,
+                          enabled: false,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10, // Adjust the height value to set the desired gap
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
                       title: "Tracking Number",
                       hintText: widget.parcel.trackNo,
-                      enabled: false,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: RoundTitleTextfield(
-                      title: "Date Managed",
-                      hintText: DateFormat('yyyy-MM-dd').format(widget.parcel.dateManaged),
-                      enabled: false, // Disable editing for the date field
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: RoundTitleTextfield(
-                      title: "Code",
-                      hintText: widget.parcel.code,
                       enabled: false,
                     ),
                   ),
@@ -112,22 +152,27 @@ class _StatusDetailState extends State<StatusDetail> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: DropdownButtonFormField<String>(
                       value: selectedCollect,
-                      decoration: InputDecoration(
-                        labelText: '${_optCollectController.text}',
-                        border: OutlineInputBorder(),
-                        hintText: 'Select Option',
-                      ),
-                      items: collect.map((String value) {
+                      items: collectOptions.map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
                         );
                       }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedCollect = newValue;
-                        });
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          // Update the selected status
+                          setState(() {
+                            selectedCollect = newValue;
+                          });
+                        }
                       },
+                      decoration: InputDecoration(
+                        labelText: 'Collect Option',
+                        //hintText: '${_optCollectController.text}',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
                     ),
                   ),
 
@@ -136,9 +181,11 @@ class _StatusDetailState extends State<StatusDetail> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: TextFormField(
                         controller: _dateController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: "Date of Parcel Retrieval",
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -156,6 +203,7 @@ class _StatusDetailState extends State<StatusDetail> {
                         },
                       ),
                     ),
+
 
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -176,206 +224,209 @@ class _StatusDetailState extends State<StatusDetail> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: RoundTitleTextfield(
-                      title: "Phone Number",
-                      hintText: widget.parcel.phoneR,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: RoundTitleTextfield(
-                      title: "Parcel No",
-                      hintText: widget.parcel.parcelNo.toString(),
-                      enabled: false,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: RoundTitleTextfield(
                       title: "Charge",
-                      hintText: widget.parcel.charge.toString(),
+                      hintText: 'RM ${widget.parcel.charge.toString()}',
                       enabled: false,
                     ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          updateParcel();
 
-                  ElevatedButton(
-                    onPressed: () {
-                      updateParcel();
-
-                      // Navigate to SplashView
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => SplashUpdateView(user: widget.user)),
-                      );
-                    },
-                    child: Text('Save'),
-                  ),
-                  if (qrURL.isNotEmpty && showQRCode)
-                    Image.network(
-                      qrURL,
-                      width: 150,
-                      height: 150,
-                    ),
-                  ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Center(
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 32,
-                                  vertical: 36,
-                                ),
-                                height: MediaQuery.of(context).size.height * 0.60,
-                                width: MediaQuery.of(context).size.width * 0.860,
-                                decoration: const BoxDecoration(
-                                  color: Colors.black,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment(0.8, 1),
-                                    colors: <Color>[
-                                      Color(0xFFFEEDFC),
-                                      Colors.white,
-                                      Color(0xFFE4E6F7),
-                                      Color(0xFFE2E5F5),
-                                    ],
-                                    tileMode: TileMode.mirror,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(16),
-                                      height: 340,
-                                      width: 340,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(60),
-                                        ),
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment(0.8, 1),
-                                          colors: <Color>[
-                                            Colors.white,
-                                            Color(0xFFE4E6F7),
-                                            Colors.white,
-                                          ],
-                                          tileMode: TileMode.mirror,
-                                        ),
-                                      ),
-                                      child: Image.network(
-                                        qrURL, // Use the qrURL for the QR code image URL
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                    const Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Recipient Generated QR Code!',
-                                          style: TextStyle(
-                                            fontFamily: 'poppins_bold',
-                                            fontSize: 30,
-                                            color: Color(0xFF6565FF),
-                                          ),
-                                        ),
-                                        Text(
-                                          "This is your unique QR code for another person to scan",
-                                          style: TextStyle(
-                                            fontFamily: 'poppins_regular',
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(12),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    blurRadius: 32.0,
-                                                    color: const Color.fromARGB(
-                                                        255, 133, 142, 212)
-                                                        .withOpacity(0.68),
-                                                  ),
-                                                ],
-                                              ),
-                                              // child: const Icon(
-                                              //   EvaIcons.shareOutline,
-                                              //   color: Color(0xFF6565FF),
-                                              // ),
-                                            ),
-                                            //const Gap(8),
-                                            const Text(
-                                              "Share",
-                                              style: TextStyle(
-                                                fontFamily: 'poppins_semi_bold',
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        //const Gap(40),
-                                        Column(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(12),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    blurRadius: 32.0,
-                                                    color: const Color.fromARGB(
-                                                        255, 133, 142, 212)
-                                                        .withOpacity(0.68),
-                                                  ),
-                                                ],
-                                              ),
-                                              // child: const Icon(
-                                              //   EvaIcons.saveOutline,
-                                              //   color: Color(0xFF6565FF),
-                                              // ),
-                                            ),
-                                            //const Gap(8),
-                                            const Text(
-                                              "Save",
-                                              style: TextStyle(
-                                                fontFamily: 'poppins_semi_bold',
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                          // Navigate to SplashView
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => SplashUpdateView(user: widget.user)),
                           );
                         },
-                      ); //Show Dialog
-                    },
-                    child: Text(showQRCode ? 'Hide QR Code' : 'Show QR Code'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: TColor.button, // Set the text color here
+                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                          ),
+                        ),
+                        child: Text('Save'),
+                      ),
+                      if (qrURL.isNotEmpty && showQRCode)
+                        Image.network(
+                          qrURL,
+                          width: 150,
+                          height: 150,
+                        ),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Center(
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 32,
+                                      vertical: 36,
+                                    ),
+                                    height: MediaQuery.of(context).size.height * 0.60,
+                                    width: MediaQuery.of(context).size.width * 0.860,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.black,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment(0.8, 1),
+                                        colors: <Color>[
+                                          Color(0xFFFEEDFC),
+                                          Colors.white,
+                                          Color(0xFFE4E6F7),
+                                          Color(0xFFE2E5F5),
+                                        ],
+                                        tileMode: TileMode.mirror,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(16),
+                                          height: 340,
+                                          width: 340,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(60),
+                                            ),
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment(0.8, 1),
+                                              colors: <Color>[
+                                                Colors.white,
+                                                Color(0xFFE4E6F7),
+                                                Colors.white,
+                                              ],
+                                              tileMode: TileMode.mirror,
+                                            ),
+                                          ),
+                                          child: Image.network(
+                                            qrURL, // Use the qrURL for the QR code image URL
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                        const Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Recipient Generated QR Code!',
+                                              style: TextStyle(
+                                                fontFamily: 'poppins_bold',
+                                                fontSize: 30,
+                                                color: Color(0xFF6565FF),
+                                              ),
+                                            ),
+                                            Text(
+                                              "This is your unique QR code for another person to scan",
+                                              style: TextStyle(
+                                                fontFamily: 'poppins_regular',
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.all(12),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: const BorderRadius.all(
+                                                      Radius.circular(12),
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        blurRadius: 32.0,
+                                                        color: const Color.fromARGB(
+                                                            255, 133, 142, 212)
+                                                            .withOpacity(0.68),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  // child: const Icon(
+                                                  //   EvaIcons.shareOutline,
+                                                  //   color: Color(0xFF6565FF),
+                                                  // ),
+                                                ),
+                                                //const Gap(8),
+                                                const Text(
+                                                  "Share",
+                                                  style: TextStyle(
+                                                    fontFamily: 'poppins_semi_bold',
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            //const Gap(40),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.all(12),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: const BorderRadius.all(
+                                                      Radius.circular(12),
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        blurRadius: 32.0,
+                                                        color: const Color.fromARGB(
+                                                            255, 133, 142, 212)
+                                                            .withOpacity(0.68),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  // child: const Icon(
+                                                  //   EvaIcons.saveOutline,
+                                                  //   color: Color(0xFF6565FF),
+                                                  // ),
+                                                ),
+                                                //const Gap(8),
+                                                const Text(
+                                                  "Save",
+                                                  style: TextStyle(
+                                                    fontFamily: 'poppins_semi_bold',
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ); //Show Dialog
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: TColor.moreButton, // Set the text color here
+                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                          ),
+                        ),
+                        child: Text(showQRCode ? 'Hide QR Code' : 'Show QR Code'),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -414,12 +465,22 @@ class _StatusDetailState extends State<StatusDetail> {
   void updateParcel() {
     // Get updated values
     String newOptCollect = selectedCollect ?? '';
-    String newStatus = 'Out Box';
+    String newStatus = widget.parcel.status;
+    DateTime? newRetrievalDate = retrievalDate;
+
+    // Check if optCollect is changed from Boxes to Counter
+    if (newOptCollect == 'Counter') {
+      newStatus = 'Not Collected';
+      newRetrievalDate = DateTime.now();
+    } else if (newOptCollect == 'Boxes') {
+      newStatus = 'Out Box';
+    }
 
     // Create a map of updated values
     Map<String, dynamic> updatedData = {
       'optCollect': newOptCollect,
-      'status' : newStatus,
+      'status': newStatus,
+      'dateManaged': newRetrievalDate,
     };
 
 
