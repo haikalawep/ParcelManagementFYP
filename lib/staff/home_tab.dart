@@ -27,6 +27,9 @@ class _MainTabViewState extends State<MainTabView> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: selectedPageView,
       backgroundColor: const Color(0xFFF9E5DE),
@@ -36,7 +39,7 @@ class _MainTabViewState extends State<MainTabView> {
         //shadowColor: Colors.white,
         elevation: 1,
         notchMargin: 12,
-        height: 84,
+        height: screenHeight * 0.11,
         shape: const CircularNotchedRectangle(),
         child: SafeArea(
           child: Row(
@@ -47,12 +50,16 @@ class _MainTabViewState extends State<MainTabView> {
                 icon: "assets/img/scan.png",
                 onTap: () => _selectTab(0),
                 isSelected: selectedIndex == 0,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
               ),
               TabButton(
                 title: "Collect",
                 icon: "assets/img/tab_offer.png",
                 onTap: () => _selectTab(1),
                 isSelected: selectedIndex == 1,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
               ),
               /*TabButton(
                 title: "Manage",
@@ -65,6 +72,8 @@ class _MainTabViewState extends State<MainTabView> {
                 icon: "assets/img/tab_more.png",
                 onTap: () => _selectTab(2),
                 isSelected: selectedIndex == 2,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
               ),
             ],
           ),

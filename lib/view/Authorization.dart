@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:parcelmanagement/customer/custHome_tab.dart';
 import 'package:parcelmanagement/staff/home_tab.dart';
+import 'package:parcelmanagement/view/WelcomeView.dart';
 import 'package:parcelmanagement/view/loginPage.dart';
 import 'package:parcelmanagement/view/welcomePage.dart';
 
@@ -28,7 +29,7 @@ class AuthPage extends StatelessWidget {
           }
 
           // User is NOT logged in or role not specified
-          return WelcomeView();
+          return WelcomeScreen();
         },
       ),
     );

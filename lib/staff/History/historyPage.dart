@@ -87,6 +87,9 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return WillPopScope(
       onWillPop: () async {
         // Navigate back to the home tab when the back button is pressed
@@ -106,7 +109,7 @@ class _HistoryPageState extends State<HistoryPage> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
               child: RoundTextfield(
                 hintText: "Search History",
                 controller: txtSearch,
@@ -129,16 +132,16 @@ class _HistoryPageState extends State<HistoryPage> {
                 itemBuilder: (context, index) {
                   final parcel = parcelList[index];
                   return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
-                      border: const Border(
+                      border: Border(
                         bottom: BorderSide(
-                          color: Colors.blueAccent,
+                          color: TColor.topBar,
                           width: 5.0,
                         ),
                         left: BorderSide(
-                          color: Colors.blueAccent,
+                          color: TColor.topBar,
                           width: 5.0,
                         ),
                       ),
@@ -146,8 +149,8 @@ class _HistoryPageState extends State<HistoryPage> {
                     ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 16,
+                        vertical: 2,
+                        horizontal: 8,
                       ),
                       onTap: () {
                         _navigateToHistoryView(parcel: parcel);
@@ -160,22 +163,22 @@ class _HistoryPageState extends State<HistoryPage> {
                         // );
                       },
                       title: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        padding: const EdgeInsets.symmetric(vertical: 0.01),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
                           children: [
                             Text(
                               parcel.trackNo, // Display the track number
-                              style: const TextStyle(
-                                fontSize: 16,
+                              style: TextStyle(
+                                fontSize: screenHeight * 0.015,
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
-                            const SizedBox(height: 15), // Add a small space between the track number and the name
+                            SizedBox(height: screenHeight * 0.01), // Add a small space between the track number and the name
                             Text(
                               parcel.nameR,
-                              style: const TextStyle(
-                                fontSize: 24,
+                              style: TextStyle(
+                                fontSize: screenHeight * 0.025,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -186,14 +189,14 @@ class _HistoryPageState extends State<HistoryPage> {
                         parcel.phoneR,
                         style: TextStyle(
                           color: Colors.blue.shade700,
-                          fontSize: 16,
+                          fontSize: screenHeight * 0.015,
                         ),
                       ),
                       trailing: Text(
                         DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black45,
-                          fontSize: 16,
+                          fontSize: screenHeight * 0.015,
                         ),
                       ),
                     ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../common/color_extension.dart';
 
 class TabButton extends StatelessWidget {
@@ -8,14 +7,18 @@ class TabButton extends StatelessWidget {
   final String? icon;
   final IconData? iconData;
   final bool isSelected;
+  final double screenWidth;
+  final double screenHeight;
 
-  const TabButton({
+  TabButton({
     Key? key,
     this.title,
     this.icon,
     this.iconData,
     required this.onTap,
     required this.isSelected,
+    required this.screenWidth,
+    required this.screenHeight,
   })  : assert(icon != null || iconData != null, 'Either icon or iconData must be provided'),
         super(key: key);
 
@@ -24,8 +27,8 @@ class TabButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: 120,
-        height: 120,// Set a fixed width to ensure all buttons have the same size
+        width: screenWidth * 0.2, // Set a dynamic width
+        height: screenHeight * 0.2, // Set a dynamic height
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,14 +36,14 @@ class TabButton extends StatelessWidget {
             if (icon != null)
               Image.asset(
                 icon!,
-                width: 20, // Set the size of the icon
-                height: 20,
+                width: screenWidth * 0.05, // Adjust the size of the icon dynamically
+                height: screenWidth * 0.05,
                 color: isSelected ? TColor.primary : TColor.placeholder,
               )
             else if (iconData != null)
               Icon(
                 iconData,
-                size: 40, // Set the size of the icon
+                size: screenWidth * 0.1, // Adjust the size of the icon dynamically
                 color: isSelected ? Colors.blueAccent : Colors.grey.shade400,
               ),
             const SizedBox(
@@ -51,7 +54,7 @@ class TabButton extends StatelessWidget {
                 title!,
                 style: TextStyle(
                   color: isSelected ? TColor.primary : TColor.placeholder,
-                  fontSize: 14,
+                  fontSize: screenWidth * 0.04, // Adjust the text size dynamically
                   fontWeight: FontWeight.w500,
                 ),
               ),

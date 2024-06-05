@@ -137,6 +137,10 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    final iconSize = screenWidth * 0.05; // or screenHeight * 0.08
+
     return Scaffold(
       backgroundColor: TColor.background,
 
@@ -149,8 +153,8 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
             Tab(text: 'Counter'),
             Tab(text: 'Box', ),
           ],
-          labelStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold), // Increase font size for selected tab
-          unselectedLabelStyle: const TextStyle(fontSize: 16),
+          labelStyle: TextStyle(fontSize: screenHeight * 0.025, fontWeight: FontWeight.bold), // Increase font size for selected tab
+          unselectedLabelStyle: TextStyle(fontSize: screenHeight * 0.015,),
         ),
       ),
       body: isLoading
@@ -163,7 +167,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
                 child: RoundTextfield(
                   hintText: "Search Parcel in Counter",
                   controller: txtSearchCounter,
@@ -184,7 +188,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                   itemBuilder: (context, index) {
                     final parcel = filteredCounterParcelList[index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
                         border: const Border(
@@ -201,8 +205,8 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 16,
+                          vertical: 2,
+                          horizontal: 8,
                         ),
                         onTap: () {
                           _navigateToDetailView(parcel: parcel);
@@ -215,22 +219,22 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                           // );
                         },
                         title: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          padding: const EdgeInsets.symmetric(vertical: 0.01),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
                             children: [
                               Text(
                                 parcel.trackNo, // Display the track number
-                                style: const TextStyle(
-                                  fontSize: 16,
+                                style: TextStyle(
+                                  fontSize: screenHeight * 0.015,
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
-                              const SizedBox(height: 15), // Add a small space between the track number and the name
+                              SizedBox(height: screenHeight * 0.01), // Add a small space between the track number and the name
                               Text(
                                 parcel.nameR,
-                                style: const TextStyle(
-                                  fontSize: 24,
+                                style: TextStyle(
+                                  fontSize: screenHeight * 0.025,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -241,14 +245,14 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                           parcel.phoneR,
                           style: TextStyle(
                             color: Colors.blue.shade700,
-                            fontSize: 16,
+                              fontSize: screenHeight * 0.015,
                           ),
                         ),
                         trailing: Text(
                           DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.black45,
-                            fontSize: 16,
+                            fontSize: screenHeight * 0.015,
                           ),
                         ),
                       ),
@@ -261,7 +265,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
                 child: RoundTextfield(
                   hintText: "Search Parcel in Box",
                   controller: txtSearchBox,
@@ -282,14 +286,14 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                   Tab(text: 'Out Box'),
                   Tab(text: 'In Box'),
                 ],
-                labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Adjust label style if needed
-                unselectedLabelStyle: const TextStyle(fontSize: 16),
+                labelStyle: TextStyle(fontSize: screenHeight * 0.025, fontWeight: FontWeight.bold), // Adjust label style if needed
+                unselectedLabelStyle: TextStyle(fontSize: screenHeight * 0.015,),
                 indicator: BoxDecoration(
-                  color: TColor.topBar, // Set the desired background color
+                  color: TColor.moreButton, // Set the desired background color
                   borderRadius: BorderRadius.circular(15), // Optional: adjust the border radius
                 ),
                 indicatorSize: TabBarIndicatorSize.tab, // or TabBarIndicatorSize.label, depending on your preference
-                indicatorWeight: 5,
+                indicatorWeight: 2,
               ),
               Expanded(
                   child: TabBarView(
@@ -300,7 +304,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                         itemBuilder: (context, index) {
                           final parcel = filteredBoxParcelList.where((parcel) => parcel.status == 'Out Box').toList()[index];
                           return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
                               border: const Border(
@@ -317,8 +321,8 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                             ),
                             child: ListTile(
                               contentPadding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 16,
+                                vertical: 2,
+                                horizontal: 8,
                               ),
                               onTap: () {
                                 _navigateToDetailView(parcel: parcel);
@@ -331,22 +335,22 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                                 // );
                               },
                               title: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                padding: const EdgeInsets.symmetric(vertical: 0.01),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
                                   children: [
                                     Text(
                                       parcel.trackNo, // Display the track number
-                                      style: const TextStyle(
-                                        fontSize: 16,
+                                      style: TextStyle(
+                                        fontSize: screenHeight * 0.015,
                                         fontWeight: FontWeight.normal,
                                       ),
                                     ),
-                                    const SizedBox(height: 15), // Add a small space between the track number and the name
+                                    SizedBox(height: screenHeight * 0.01), // Add a small space between the track number and the name
                                     Text(
                                       parcel.nameR,
-                                      style: const TextStyle(
-                                        fontSize: 24,
+                                      style: TextStyle(
+                                        fontSize: screenHeight * 0.025,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -357,14 +361,14 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                                 parcel.phoneR,
                                 style: TextStyle(
                                   color: Colors.blue.shade700,
-                                  fontSize: 16,
+                                  fontSize: screenHeight * 0.015,
                                 ),
                               ),
                               trailing: Text(
                                 DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.black45,
-                                  fontSize: 16,
+                                  fontSize: screenHeight * 0.015,
                                 ),
                               ),
                             ),
@@ -378,7 +382,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                           final parcel = filteredBoxParcelList.where((parcel) => parcel.status == 'In Box').toList()[index];
                           bool isDateAfterNow = parcel.dateManaged.isAfter(DateTime.now());
                           return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
                               border: const Border(
@@ -395,8 +399,8 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                             ),
                             child: ListTile(
                               contentPadding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 16,
+                                //vertical: 2,
+                                horizontal: 4,
                               ),
                               onTap: () {
                                 _navigateToDetailView(parcel: parcel);
@@ -409,25 +413,25 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                                 // );
                               },
                               leading: isDateAfterNow
-                                ? const Icon(Icons.circle, color: Colors.green, size: 30)
-                                : const Icon(Icons.circle, color: Colors.red, size: 30),
+                                ? Icon(Icons.circle, color: Colors.green, size: iconSize)
+                                : Icon(Icons.circle, color: Colors.red, size: iconSize),
                               title: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                padding: const EdgeInsets.symmetric(vertical: 0.005),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
                                   children: [
                                     Text(
                                       parcel.trackNo, // Display the track number
-                                      style: const TextStyle(
-                                        fontSize: 16,
+                                      style: TextStyle(
+                                        fontSize: screenHeight * 0.015,
                                         fontWeight: FontWeight.normal,
                                       ),
                                     ),
-                                    const SizedBox(height: 15), // Add a small space between the track number and the name
+                                    SizedBox(height: screenHeight * 0.01), // Add a small space between the track number and the name
                                     Text(
                                       parcel.nameR,
-                                      style: const TextStyle(
-                                        fontSize: 24,
+                                      style: TextStyle(
+                                        fontSize: screenHeight * 0.025,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -438,14 +442,14 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                                 parcel.phoneR,
                                 style: TextStyle(
                                   color: Colors.blue.shade700,
-                                  fontSize: 16,
+                                  fontSize: screenHeight * 0.015,
                                 ),
                               ),
                               trailing: Text(
                                 DateFormat('dd-MM-yyyy').format(parcel.dateManaged),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.black45,
-                                  fontSize: 16,
+                                  fontSize: screenHeight * 0.015,
                                 ),
                               ),
                             ),

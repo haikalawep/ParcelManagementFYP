@@ -19,6 +19,9 @@ class _CustTabViewState extends State<CustTabView> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SizedBox(
         height: MediaQuery.of(context).size.height - kBottomNavigationBarHeight - MediaQuery.of(context).padding.bottom - kToolbarHeight,
@@ -45,8 +48,8 @@ class _CustTabViewState extends State<CustTabView> {
       ),//*/
       bottomNavigationBar: BottomAppBar(
         //elevation: 8,
-        notchMargin: 9,
-        height: 100,
+        notchMargin: 12,
+        height: screenHeight * 0.11,
         shape: const CircularNotchedRectangle(),
         child: SafeArea(
           child: Padding(
@@ -55,9 +58,11 @@ class _CustTabViewState extends State<CustTabView> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TabButton(
-                  title: "Parcel Status",
+                  title: "Status",
                   icon: "assets/img/tab_more.png",
                   isSelected: selctTab == 3,
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
                   onTap: () {
                     if (selctTab != 3) {
                       setState(() {
@@ -84,6 +89,8 @@ class _CustTabViewState extends State<CustTabView> {
                   title: "Profile",
                   icon: "assets/img/tab_profile.png",
                   isSelected: selctTab == 4,
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
                   onTap: () {
                     if (selctTab != 4) {
                       setState(() {

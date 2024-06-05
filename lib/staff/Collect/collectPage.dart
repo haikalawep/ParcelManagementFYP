@@ -72,108 +72,143 @@ class _CollectViewState extends State<CollectView> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Navigate back to the home tab when the back button is pressed
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainTabView()),
-        );
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: TColor.background,
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    final iconSize = screenWidth * 0.15;
 
-        appBar: AppBar(
-          title: const Text('Collect'),
-          backgroundColor: TColor.topBar,
-          elevation: 0,
-          actions: [
-            IconButton(
-                icon: const Icon(Icons.logout),
-                onPressed: () {
-                  signUserOut(context);
-                }
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: RoundTextfield(
-                  hintText: "Search Recipient",
-                  controller: txtSearch,
-                  left: Container(
-                    alignment: Alignment.center,
-                    width: 30,
-                    child: Image.asset(
-                      "assets/img/search.png",
-                      width: 20,
-                      height: 20,
+    return Scaffold(
+      backgroundColor: TColor.background,
+
+      appBar: AppBar(
+        title: const Text('Collect'),
+        backgroundColor: TColor.topBar,
+        elevation: 0,
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                signUserOut(context);
+              }
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: RoundTextfield(
+                    hintText: "Search Recipient",
+                    controller: txtSearch,
+                    left: Container(
+                      alignment: Alignment.center,
+                      width: 30,
+                      child: Image.asset(
+                        "assets/img/search.png",
+                        width: 20,
+                        height: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.035),
+                Container(
+                    padding: EdgeInsets.all(5),
+                    child: Center(
+                        child: Text(
+                          '$parcelsCollectedToday Parcels Collected Today',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: screenHeight * 0.04,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    ),
+                  ),
+              SizedBox(height: screenHeight * 0.41),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  //margin: EdgeInsets.only(bottom: 5), // Adjust the margin as needed
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // Navigate to ParcelCollectPage and wait for result
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ParcelCollectPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      backgroundColor: Colors.white,
+                      padding: EdgeInsets.all(screenWidth * 0.045),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Scan Here',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: screenHeight * 0.02,
+                          ),
+                        ),
+                        //SizedBox(height: screenHeight * 0.03),
+                        Icon(
+                          Icons.qr_code,
+                          size: iconSize,
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              Container(
-                  padding: EdgeInsets.all(16),
-                  margin: EdgeInsets.only(top: 40),
-                  child: Center(
-                      child: Text(
-                        '$parcelsCollectedToday PARCELS COLLECTED TODAY',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                  ),
-                ),
-              Center(
-                child: Container(
-                  height: 200,
-                  width: 200,
-                ),
-              ),
-            ],
-          ),
-
-        floatingActionButton: ElevatedButton(
-          onPressed: () async {
-            // Navigate to ParcelDetailView and wait for result
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ParcelCollectPage(),
-              ),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            shape: CircleBorder(), backgroundColor: Colors.white,
-            padding: EdgeInsets.all(16), // Change to your desired background color
-          ),
-          child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Scan Here',
-                style: TextStyle(
-                  color: Colors.black, // Adjust the text color to contrast with the background
-                  fontSize: 12, // Adjust the text size if necessary
-                ),
-              ),
-              SizedBox(height: 4), // Add some space between the icon and text
-              Icon(
-                Icons.qr_code,
-                size: 70, // Adjust the size if necessary
-                color: Colors.black, // Adjust the color if necessary
-              ),
             ],
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
+
+
+      // floatingActionButton: ElevatedButton(
+      //   onPressed: () async {
+      //     // Navigate to ParcelDetailView and wait for result
+      //     await Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (context) => ParcelCollectPage(),
+      //       ),
+      //     );
+      //   },
+      //   style: ElevatedButton.styleFrom(
+      //     shape: CircleBorder(), backgroundColor: Colors.white,
+      //     padding: EdgeInsets.all(16), // Change to your desired background color
+      //   ),
+      //   child: Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text(
+      //         'Scan Here',
+      //         style: TextStyle(
+      //           color: Colors.black, // Adjust the text color to contrast with the background
+      //           fontSize: screenHeight * 0.020, // Adjust the text size if necessary
+      //         ),
+      //       ),
+      //       SizedBox(height: screenHeight * 0.03), // Add some space between the icon and text
+      //       Icon(
+      //         Icons.qr_code,
+      //         size: 70, // Adjust the size if necessary
+      //         color: Colors.black, // Adjust the color if necessary
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
     );
 
   }

@@ -62,6 +62,9 @@ class _ParcelDetailState extends State<ParcelDetail> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: TColor.background,
       appBar: AppBar(
@@ -73,13 +76,14 @@ class _ParcelDetailState extends State<ParcelDetail> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Parcel Name",
                   hintText: "Enter Name",
                   controller: _nameController,
                 ),
               ),
+              //SizedBox(height: screenHeight * 0.01),
               Row(
                 children: [
                   Expanded(
@@ -89,9 +93,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                       controller: _codeController,
                     ),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: screenWidth * 0.02),
                   Expanded(
                     child: RoundTitleTextfield(
                     title: "Parcel No",
@@ -101,9 +103,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: screenHeight * 0.01),
               Row(
                 children: [
                   Expanded(
@@ -114,9 +114,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                       enabled: false, // Disable editing for the date field
                     ),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: screenWidth * 0.02),
                   Expanded(
                     child: RoundTitleTextfield(
                       title: "Phone Number",
@@ -127,7 +125,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Tracking Number",
                   hintText: "Enter Track Number",
@@ -135,7 +133,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Collect Option",
                   hintText: "Enter Option",
@@ -143,7 +141,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Color",
                   hintText: "Enter Color",
@@ -151,7 +149,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Size",
                   hintText: "Enter Size",
@@ -160,7 +158,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
               ),
               if (widget.parcel.optCollect == 'Boxes')
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child: DropdownButtonFormField<String>(
                     value: selectedStatus,
                     items: statusOptions.map((String status) {
@@ -187,7 +185,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                 )
               else if (widget.parcel.optCollect == 'Counter')
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child: RoundTitleTextfield(
                     title: "Status",
                     hintText: selectedStatus,
@@ -195,7 +193,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                   ),
                 ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Charge (RM)",
                   hintText: "Enter Charge",
@@ -209,7 +207,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                       widget.parcel.status == 'In Box' &&
                       widget.parcel.dateManaged.isBefore(DateTime.now()))
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
                       child: ElevatedButton(
                         onPressed: () {
                           // Update optCollect to 'Counter'
@@ -233,30 +231,58 @@ class _ParcelDetailState extends State<ParcelDetail> {
                         child: Text('Change'),
                       ),
                     ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Update database with new values
-                      // You can call a function here to update the database
-                      updateParcel();
-                      Navigator.pushReplacement(
+                  SizedBox(height: screenHeight * 0.10),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SplashEditView()),
+                        MaterialPageRoute(
+                          builder: (context) => SplashEditView(),
+                        ),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: TColor.button, // Set the text color here
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                    child: Container(
+                      width: screenWidth*0.33,
+                      height: screenHeight*0.07,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(17),
+                          color: TColor.button
+                      ),
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(
+                            fontSize: screenHeight * 0.03,
+                            color: TColor.white,
+                            fontWeight: FontWeight.w500
+                        ),
                       ),
                     ),
-                    child: Text('Edit'),
                   ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     // Update database with new values
+                  //     // You can call a function here to update the database
+                  //     updateParcel();
+                  //     Navigator.pushReplacement(
+                  //       context,
+                  //       MaterialPageRoute(builder: (context) => SplashEditView()),
+                  //     );
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     foregroundColor: Colors.white, backgroundColor: TColor.button, // Set the text color here
+                  //     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                  //     ),
+                  //   ),
+                  //   child: Text('Edit'),
+                  // ),
                   if (qrURL.isNotEmpty && showQRCode)
                     Image.network(
                       qrURL,
-                      width: 150,
-                      height: 150,
+                      width: 50,
+                      height: 50,
                     ),
                   //SizedBox(width: 20),
                   ElevatedButton(
@@ -269,11 +295,11 @@ class _ParcelDetailState extends State<ParcelDetail> {
                               type: MaterialType.transparency,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 32,
-                                  vertical: 36,
+                                  horizontal: 10,
+                                  vertical: 10,
                                 ),
-                                height: MediaQuery.of(context).size.height * 0.60,
-                                width: MediaQuery.of(context).size.width * 0.860,
+                                width: screenWidth*0.9,
+                                height: screenHeight*0.7,
                                 decoration: const BoxDecoration(
                                   color: Colors.black,
                                   gradient: LinearGradient(
@@ -288,16 +314,16 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                     tileMode: TileMode.mirror,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
+                                    Radius.circular(15),
                                   ),
                                 ),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(16),
-                                      height: 340,
-                                      width: 340,
+                                      width: screenWidth*0.7,
+                                      height: screenHeight*0.4,
                                       decoration: const BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.all(
@@ -316,17 +342,16 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                       ),
                                       child: Image.network(
                                         qrURL, // Use the qrURL for the QR code image URL
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.contain,
                                       ),
                                     ),
-                                    const Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                    Column(
                                       children: [
                                         Text(
                                           'Recipient Generated QR Code!',
                                           style: TextStyle(
                                             fontFamily: 'poppins_bold',
-                                            fontSize: 30,
+                                            fontSize: screenHeight*0.025,
                                             color: Color(0xFF6565FF),
                                           ),
                                         ),
@@ -334,7 +359,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                           "This is your unique QR code for another person to scan",
                                           style: TextStyle(
                                             fontFamily: 'poppins_regular',
-                                            fontSize: 14,
+                                            fontSize: screenHeight*0.025,
                                           ),
                                         ),
                                       ],
@@ -421,12 +446,20 @@ class _ParcelDetailState extends State<ParcelDetail> {
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white, backgroundColor: TColor.moreButton, // Set the text color here
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth*0.05,
+                        vertical: screenHeight*0.014,
+                      ), // Adjust padding if needed
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                        borderRadius: BorderRadius.circular(17), // Adjust border radius if needed
                       ),
                     ),
-                    child: Text(showQRCode ? 'Hide QR Code' : 'Show QR Code'),
+                    child: Text(showQRCode ? 'Hide QR Code' : 'QR Code',
+                      style: TextStyle(
+                          fontSize: screenHeight * 0.03,
+                          color: TColor.white,
+                          fontWeight: FontWeight.w500
+                      ),),
                   ),
                 ],
               ),
@@ -542,7 +575,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
 
     // Query for the document that matches the parcel's name (or any other unique identifier)
     parcelsRef
-        .where('nameR', isEqualTo: widget.parcel.nameR)
+        .where('parcelNo', isEqualTo: widget.parcel.parcelNo)
         .limit(1)
         .get()
         .then((querySnapshot) {

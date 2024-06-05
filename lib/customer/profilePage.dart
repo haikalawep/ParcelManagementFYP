@@ -159,6 +159,12 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    final screenSize = MediaQuery.of(context).size;
+    double iconSize = screenSize.width * 0.08;
+    double radius = screenSize.width * 0.17;
+
     return SafeArea(
         child: Scaffold(
           backgroundColor: TColor.background,
@@ -167,20 +173,20 @@ class _ProfileViewState extends State<ProfileView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 15),
+                SizedBox(height: screenHeight * 0.01),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(
-                        width: 15,
+                      SizedBox(
+                        width: screenWidth*0.14,
                       ),
-                      const Text(
+                      Text(
                         'Profile',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 25.0,
+                            fontSize: screenHeight * 0.035,
                             color: Colors.black,
                             fontWeight: FontWeight.w600),
                       ),
@@ -188,15 +194,15 @@ class _ProfileViewState extends State<ProfileView> {
                         onPressed: () {
                           signUserOut(context);
                         },
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.exit_to_app,
-                          size: 30,
+                          size: iconSize,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.02),
                 Stack(
                   children: [
                     // Container(
@@ -210,7 +216,7 @@ class _ProfileViewState extends State<ProfileView> {
                     GestureDetector(
                       onTap: () async { _pickImage(); },
                       child: CircleAvatar(
-                        radius: 100,
+                        radius: radius,
                         backgroundColor: TColor.placeholder,
                         backgroundImage: imageUrl != null
                             ? NetworkImage(imageUrl!)
@@ -218,7 +224,7 @@ class _ProfileViewState extends State<ProfileView> {
                         child: imageUrl == null
                             ? Icon(
                           Icons.person,
-                          size: 65,
+                          size: iconSize,
                           color: TColor.secondaryText,
                         )
                             : null,
@@ -240,26 +246,24 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: screenHeight * 0.02),
                 Text(
                   'Hi there, ${_nameUserController.text}!',
                   style: TextStyle(
                     color: TColor.primaryText,
-                    fontSize: 16,
+                    fontSize: screenHeight * 0.025,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 20),
-
+                SizedBox(height: screenHeight * 0.01),
                 _buildInputField(context, 'Name', _nameUserController.text, Icon(Icons.person), controller: _nameUserController),
-                const SizedBox(height: 10),
+                SizedBox(height: screenHeight * 0.01),
                 _buildInputField(context, 'Email', _emailUserController.text, Icon(Icons.email),controller: _emailUserController),
-                const SizedBox(height: 10),
+                SizedBox(height: screenHeight * 0.01),
                 _buildInputField(context, 'Phone', _mobileUserController.text, Icon(Icons.phone), controller: _mobileUserController),
-                const SizedBox(height: 10),
+                SizedBox(height: screenHeight * 0.01),
                 _buildInputField(context, 'College', _collegeUserController.text, Icon(Icons.my_location), controller: _collegeUserController),
-                const SizedBox(height: 10),
-
+                SizedBox(height: screenHeight * 0.01),
 
                 //itemProfile('Name', _nameUserController, Icon(Icons.person)),
                 //const SizedBox(height: 10),
@@ -307,19 +311,16 @@ class _ProfileViewState extends State<ProfileView> {
                 //     controller: _collegeUserController,
                 //   ),
                 // ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
+                SizedBox(height: screenHeight * 0.01),
+                GestureDetector(
+                  onTap: () {
                     _showSaveConfirmationDialog();
                   },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: TColor.button, // Set the text color here
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
-                    ),
-                  ),
-                  child: Text('Save'),
+                  child: Container(width: screenWidth*0.5, height: screenHeight*0.07, alignment: Alignment.center, decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), color: TColor.button), child: Text(
+                    "Save",
+                    style: TextStyle(
+                        fontSize: screenHeight * 0.03, color: TColor.white, fontWeight: FontWeight.w500),
+                  ),),
                 ),
 
                 // Padding(
@@ -333,7 +334,7 @@ class _ProfileViewState extends State<ProfileView> {
                 //     },
                 //   ),
                 // ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.01),
               ],
             ),
           ),
@@ -342,26 +343,40 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Widget _buildInputField(
-      BuildContext context, String labelText, String initialValue, Icon icon, {required TextEditingController controller}) {
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: icon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        filled: true,
-        fillColor: TColor.topBar,
-      ),
-      child: TextField(
-        controller: controller,
+      BuildContext context,
+      String labelText,
+      String initialValue,
+      Icon icon,
+      {required TextEditingController controller}
+      ) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02), // Adjust horizontal padding as needed
+      child: InputDecorator(
         decoration: InputDecoration(
-          hintText: initialValue,
-          border: InputBorder.none,
+          labelText: labelText,
+          prefixIcon: icon,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          filled: true,
+          fillColor: TColor.topBar,
+          contentPadding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 16.0),
+        ),
+        child: TextField(
+          style: TextStyle(fontSize: screenHeight * 0.025),
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: initialValue,
+            border: InputBorder.none,
+          ),
         ),
       ),
     );
   }
+
 
   void _showSaveConfirmationDialog() {
     showDialog(

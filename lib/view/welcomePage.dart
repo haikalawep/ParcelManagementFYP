@@ -76,7 +76,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegisterView(),
+                      builder: (context) => RegisterPage(),
                     ),
                   );
                 },
