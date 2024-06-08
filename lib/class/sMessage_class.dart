@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class StaffMessage {
   final String sMessage;
   final int parcelNo;
-  final Timestamp datesMessage;
-  final DateTime? confirmRetrievalDate;
+  final DateTime datesMessage;
+  final DateTime confirmRetrievalDate;
 
   StaffMessage({
     required this.sMessage,
     required this.parcelNo,
     required this.datesMessage,
-    this.confirmRetrievalDate,
+    required this.confirmRetrievalDate,
   });
 
   // Method to convert a Message object to a map
@@ -27,9 +27,9 @@ class StaffMessage {
   factory StaffMessage.fromMap(Map<String, dynamic> map) {
     return StaffMessage(
       sMessage: map['message'] ?? '',
-      parcelNo: map['parcelNo'] ?? 0,
+      parcelNo: map['parcelNo'] ?? '',
       datesMessage: map['timestamp'] ?? Timestamp.now(),
-      confirmRetrievalDate: map['confirmRetrievalDate'],
+      confirmRetrievalDate: map['confirmRetrievalDate'] ?? Timestamp.now(),
     );
   }
 
@@ -38,9 +38,9 @@ class StaffMessage {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return StaffMessage(
       sMessage: data['message'] ?? '',
-      parcelNo: data['parcelNo'] ?? 0,
+      parcelNo: data['parcelNo'] ?? '',
       datesMessage: data['timestamp'] ?? Timestamp.now(),
-      confirmRetrievalDate: data['confirmRetrievalDate'],
+      confirmRetrievalDate: data['confirmRetrievalDate'] ?? Timestamp.now(),
     );
   }
 }

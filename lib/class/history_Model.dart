@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Parcel {
+class History {
   final String nameR;
   final DateTime dateManaged;
-  final DateTime collectDate;
   final String code;
   final String color;
   final int charge;
@@ -12,14 +11,12 @@ class Parcel {
   final String phoneR;
   final String size;
   final String status;
-  final String qrURL;
   final String trackNo;
   final int parcelID;// New field for QR code data
 
-  Parcel({
+  History({
     required this.nameR,
     required this.dateManaged,
-    required this.collectDate,
     required this.code,
     required this.color,
     required this.charge,
@@ -28,17 +25,15 @@ class Parcel {
     required this.phoneR,
     required this.size,
     required this.status,
-    required this.qrURL,
     required this.trackNo,
     required this.parcelID,// Include qrCodeData in the constructor
   });
 
   // Static method to create a Parcel object from a map
-  static Parcel fromMap(Map<String, dynamic> map) {
-    return Parcel(
+  static History fromMap(Map<String, dynamic> map) {
+    return History(
       nameR: map['nameR'],
       dateManaged: (map['dateManaged'] as Timestamp).toDate(),
-      collectDate: (map['collectDate'] as Timestamp).toDate(),
       code: map['code'],
       color: map['color'],
       optCollect: map['optCollect'],
@@ -47,7 +42,6 @@ class Parcel {
       phoneR: map['phoneR'],
       parcelNo: map['parcelNo'],
       charge: map['charge'],
-      qrURL: map['qrURL'],
       trackNo: map['trackNo'],
       parcelID: map['parcelID'],
     );
@@ -58,7 +52,6 @@ class Parcel {
     return {
       'nameR': nameR,
       'dateManaged': dateManaged,
-      'collectDate': collectDate,
       'code': code,
       'color': color,
       'optCollect': optCollect,
@@ -67,7 +60,6 @@ class Parcel {
       'phoneR': phoneR,
       'parcelNo': parcelNo,
       'charge': charge,
-      'qrURL': qrURL,
       'trackNo': trackNo,
       'parcelID': parcelID, //Data in the toMap method
     };

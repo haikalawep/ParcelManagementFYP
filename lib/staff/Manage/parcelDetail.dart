@@ -1,6 +1,8 @@
 import 'package:parcelmanagement/class/sMessage_class.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/staff/Manage/SplashEdit.dart';
+import 'package:parcelmanagement/staff/Manage/manage_detailParcel.dart';
+import 'package:parcelmanagement/view/SplashWelcome.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +25,14 @@ class ParcelDetail extends StatefulWidget {
 class _ParcelDetailState extends State<ParcelDetail> {
   String qrURL = '';
   bool showQRCode = false;
-  DateTime? retrievalDate;
+  DateTime retrievalDate = DateTime.now();
 
   List<String> statusOptions = ['In Box', 'Out Box', 'Not Collected'];
   String selectedStatus = '';
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _dateManagedController = TextEditingController();
+  TextEditingController _collectDateController = TextEditingController();
   TextEditingController _codeController = TextEditingController();
   TextEditingController _colorController = TextEditingController();
   TextEditingController _optCollectController = TextEditingController();
@@ -46,6 +49,8 @@ class _ParcelDetailState extends State<ParcelDetail> {
     _nameController.text = widget.parcel.nameR;
     _dateManagedController.text =
         DateFormat('yyyy-MM-dd').format(widget.parcel.dateManaged);
+    _collectDateController.text =
+        DateFormat('yyyy-MM-dd').format(widget.parcel.collectDate);
     _codeController.text = widget.parcel.code;
     _colorController.text = widget.parcel.color;
     _optCollectController.text = widget.parcel.optCollect;
@@ -69,6 +74,20 @@ class _ParcelDetailState extends State<ParcelDetail> {
       backgroundColor: TColor.background,
       appBar: AppBar(
         title: Text('Parcel Details'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.done),
+            onPressed: () {
+              _showCompleteConfirmationDialog();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              _showDeleteConfirmationDialog();
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -124,6 +143,16 @@ class _ParcelDetailState extends State<ParcelDetail> {
                   )
                 ],
               ),
+              if (widget.parcel.optCollect == 'Boxes')
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: RoundTitleTextfield(
+                    title: "Collect Date",
+                    hintText: _collectDateController.text,
+                    //controller: _dateManagedController,
+                    enabled: false, // Disable editing for the date field
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
@@ -200,49 +229,56 @@ class _ParcelDetailState extends State<ParcelDetail> {
                   controller: _chargeController,
                 ),
               ),
+              SizedBox(height: screenHeight*0.01),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   if (widget.parcel.optCollect == 'Boxes' &&
                       widget.parcel.status == 'In Box' &&
-                      widget.parcel.dateManaged.isBefore(DateTime.now()))
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Update optCollect to 'Counter'
-                          setState(() {
-                            _optCollectController.text = 'Counter';
-                            selectedStatus = 'Not Collected';
-                          });
-                          updateParcel();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => SplashEditView()),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white, backgroundColor: TColor.changeButton, // Set the text color here
-                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                      widget.parcel.collectDate.isBefore(DateTime.now()))
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _optCollectController.text = 'Counter';
+                          selectedStatus = 'Not Collected';
+                        });
+                        updateParcel();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => SplashEditView()),
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth*0.25,
+                        height: screenHeight*0.07,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(17),
+                            color: TColor.changeButton
+                        ),
+                        child: Text(
+                          "Counter",
+                          style: TextStyle(
+                              fontSize: screenHeight * 0.03,
+                              color: TColor.white,
+                              fontWeight: FontWeight.w500
                           ),
                         ),
-                        child: Text('Change'),
                       ),
                     ),
-                  SizedBox(height: screenHeight * 0.10),
+                  //SizedBox(width: screenWidth * 0.00005),
                   GestureDetector(
                     onTap: () {
+                      updateParcel();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SplashEditView(),
+                          builder: (context) => SplashView(),
                         ),
                       );
                     },
                     child: Container(
-                      width: screenWidth*0.33,
+                      width: screenWidth*0.25,
                       height: screenHeight*0.07,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -404,7 +440,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                         Column(
                                           children: [
                                             Container(
-                                              padding: const EdgeInsets.all(12),
+                                              padding: const EdgeInsets.all(5),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                                 borderRadius: const BorderRadius.all(
@@ -447,7 +483,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white, backgroundColor: TColor.moreButton, // Set the text color here
                       padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth*0.05,
+                        horizontal: screenWidth*0.025,
                         vertical: screenHeight*0.014,
                       ), // Adjust padding if needed
                       shape: RoundedRectangleBorder(
@@ -459,10 +495,12 @@ class _ParcelDetailState extends State<ParcelDetail> {
                           fontSize: screenHeight * 0.03,
                           color: TColor.white,
                           fontWeight: FontWeight.w500
-                      ),),
+                      ),
+                    ),
                   ),
                 ],
               ),
+              SizedBox(height: screenHeight*0.01),
             ],
           ),
         ),
@@ -484,7 +522,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
           retrievalDate = (cMessageData['retrievalDate'] as Timestamp).toDate();
         });
       } else {
-        print('cMessage not found in Firestore');
+        print('cMessages not found in Firestore');
       }
     } catch (e) {
       print('Error retrieving retrieval date: $e');
@@ -522,7 +560,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
     StaffMessage message = StaffMessage(
       sMessage: messageText,
       parcelNo: parcelNo,
-      datesMessage: Timestamp.now(),
+      datesMessage: Timestamp.now().toDate(),
       confirmRetrievalDate: retrievalDate,
     );
 
@@ -543,6 +581,51 @@ class _ParcelDetailState extends State<ParcelDetail> {
     });
   }
 
+  void deleteParcel() {
+    // Get the parcel number
+    int parcelNo = widget.parcel.parcelNo;
+
+    // Get a reference to the Firestore collection
+    CollectionReference parcelsRef = FirebaseFirestore.instance.collection('parcelD');
+
+    // Query for the document with the matching parcel number
+    parcelsRef
+        .where('parcelNo', isEqualTo: parcelNo)
+        .limit(1)
+        .get()
+        .then((querySnapshot) {
+      // Check if the document exists
+      if (querySnapshot.docs.isNotEmpty) {
+        // Get the document ID
+        String docId = querySnapshot.docs.first.id;
+
+        // Delete the document from Firestore
+        parcelsRef.doc(docId).delete().then((value) {
+          // Document successfully deleted
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Parcel deleted successfully')),
+          );
+        }).catchError((error) {
+          // An error occurred
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to delete parcel')),
+          );
+        });
+      } else {
+        // Document not found
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Parcel not found')),
+        );
+      }
+    }).catchError((error) {
+      // Error querying Firestore
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error querying Firestore')),
+      );
+    });
+
+  }
+
   void updateParcel() {
     // Get updated values from controllers
     String newName = _nameController.text;
@@ -555,6 +638,8 @@ class _ParcelDetailState extends State<ParcelDetail> {
     int newParcelNo = int.parse(_parcelNoController.text);
     int newCharge = int.parse(_chargeController.text);
     String newTrackNo = _trackNoController.text;
+    int newParcelID = widget.parcel.parcelID;
+    print(widget.parcel.parcelID);
 
     // Create a map of updated values
     Map<String, dynamic> updatedData = {
@@ -568,6 +653,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
       'parcelNo': newParcelNo,
       'charge': newCharge,
       'trackNo' : newTrackNo,
+      'parcelID' : newParcelID,
     };
 
     // Get a reference to the Firestore collection
@@ -592,7 +678,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
             .then((value) {
           if (newStatus == 'In Box') {
             // Send message if optCollect is "Box"
-            sendMessage(widget.parcel.parcelNo, 'your parcel ready to be collected at box');
+            sendMessage(widget.parcel.parcelNo, 'Your parcel ready to be collected at box');
           }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Parcel updated successfully')),
@@ -610,7 +696,109 @@ class _ParcelDetailState extends State<ParcelDetail> {
         .catchError((error) {
       print('Error querying Firestore: $error');
     });
-
   }
+
+  void completeParcel() async {
+    try {
+      String historyId = 'history_${widget.parcel.parcelNo}';
+
+      await FirebaseFirestore.instance
+          .collection('history')
+          .doc(historyId)
+          .set({
+        'parcelID': widget.parcel.parcelID,
+        'nameR': widget.parcel.nameR,
+        'code': widget.parcel.code,
+        'parcelNo': widget.parcel.parcelNo,
+        'phoneR': widget.parcel.phoneR,
+        'dateManaged': DateTime.now(),
+        'trackNo': widget.parcel.trackNo,
+        'optCollect': widget.parcel.optCollect,
+        'color': widget.parcel.color,
+        'size': widget.parcel.size,
+        'status': 'Collected', // Update the status to Collected
+        'charge': widget.parcel.charge,
+      });
+
+      await FirebaseFirestore.instance
+          .collection('parcelD')
+          .doc('parcel_${widget.parcel.parcelNo.toString()}')
+          .delete();
+
+      // Show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Parcel marked as collected.')),
+      );
+    } catch (e) {
+      print('Error completing parcel: $e');
+      // Show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error completing parcel.')),
+      );
+    }
+  }
+
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete'),
+          content: const Text('Are you sure you want to delete this information?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                deleteParcel();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SplashView()),
+                );
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCompleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit'),
+          content: const Text('Are you sure you want to confirm the collection?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                completeParcel();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SplashView()),
+                );
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
 }

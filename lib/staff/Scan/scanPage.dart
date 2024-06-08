@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/staff/Collect/SplashCollect.dart';
 import 'package:parcelmanagement/staff/Manage/manage_detailParcel.dart';
@@ -27,6 +29,8 @@ class _ScanViewState extends State<ScanView> {
   bool isLoading = true; // Add a loading state
 
   final user = FirebaseAuth.instance.currentUser!;
+
+  bool isSwitched = false;
 
   @override
   void initState() {
@@ -96,213 +100,273 @@ class _ScanViewState extends State<ScanView> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    final iconSize = screenWidth * 0.15;
+    final iconSize = screenWidth * 0.1;
 
     return Scaffold(
-      backgroundColor: TColor.background,
+      backgroundColor: TColor.primary,
 
       appBar: AppBar(
-        title: const Text("Notify"),
-        backgroundColor: TColor.topBar,
+        title: const Text("Notify", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: TColor.primary,
         elevation: 0,
         actions: [
           IconButton(
               icon: const Icon(Icons.logout),
+              color: Colors.white,
               onPressed: () {
                 signUserOut(context);
               }
           ),
         ],
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
-
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-                children: [
-                  SizedBox(height: screenHeight*0.05),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Center(
-                      child: Text(
-                        "$numberOfParcelsToday Parcel Scanned Today",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: screenHeight * 0.04,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+      body: isLoading
+          ? const Center(
+        child: RefreshProgressIndicator(),
+      )
+          : Padding(
+        padding: const EdgeInsets.fromLTRB(7, 0, 7, 0),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(30.0),
+                        topLeft: Radius.circular(30.0),
                       ),
+                      color: TColor.secondary,
                     ),
-                  ),
-                  SizedBox(height: screenHeight*0.04),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              // Navigate to the next page when the container is clicked
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const HomeView()), // Replace NextPage with your actual next page widget
-                              );
-                            },
-                            child: Container(
-                              height: screenHeight * 0.18, // Adjust the height as needed
-                              child: Card(
-                                color: TColor.topBar,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Total Recipients',
-                                        style: TextStyle(
-                                          fontSize: screenHeight * 0.02,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: screenHeight*0.025),
-                                      Center(
-                                        child: Text(
-                                          '$numberOfRecipients',
-                                          style: TextStyle(
-                                            fontSize: screenHeight * 0.045,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Center(
+                            child: Text(
+                              "$numberOfParcelsToday Parcel Scanned Today",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: screenHeight * 0.04,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
                             ),
                           ),
                         ),
-          
-                        SizedBox(width: screenWidth*0.04),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              // Navigate to the next page when the container is clicked
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ManageParcelPage()), // Replace NextPage with your actual next page widget
-                              );
-                            },
-                            child: Container(
-                              height: screenHeight * 0.18, // Adjust the height as needed
-                              child: Card(
-                                color: TColor.topBar,
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Parcels Hold',
-                                        style: TextStyle(
-                                          fontSize: screenHeight * 0.02,
-                                          fontWeight: FontWeight.bold,
+                        SizedBox(height: screenHeight*0.03),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ServoControlScreen()),
+                                  );
+                                },
+                                child: Container(
+                                  height: screenHeight * 0.35,
+                                  width: screenWidth * 0.4,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.purpleAccent),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: screenHeight*0.03),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: screenWidth * 0.04),
+                                            SvgPicture.asset(
+                                              'assets/icons/Unlock(1).svg',
+                                              //color: Colors.grey[300],
+                                              height: screenHeight * 0.065,
+                                              width: screenWidth * 0.055,
+                                            ),
+                                            //SizedBox(width: screenWidth * 0.02),
+                                          ],
                                         ),
-                                      ),
-                                      SizedBox(height: screenHeight*0.025),
-                                      Center( // Center horizontally and vertically
-                                        child: Text(
-                                          '$numberOfParcels',
-                                          style: TextStyle(
-                                            fontSize: screenHeight * 0.045,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        SizedBox(height: screenHeight*0.03),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: screenWidth * 0.04),
+                                            Text(
+                                              "Control",
+                                              style: TextStyle(
+                                                  fontSize: screenHeight * 0.03,
+                                                  color: TColor.white,
+                                                  fontWeight: FontWeight.w500
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
+                                        //SizedBox(height: screenHeight*0.01),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: screenWidth * 0.04),
+                                            Text(
+                                              "Box",
+                                              style: TextStyle(
+                                                  fontSize: screenHeight * 0.03,
+                                                  color: TColor.white,
+                                                  fontWeight: FontWeight.w500
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: screenHeight*0.04),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: screenWidth * 0.02),
+                                            Switch(
+                                              value: isSwitched,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  isSwitched = value;
+                                                });
+                                              },
+                                              activeColor: Colors.green,
+                                              inactiveThumbColor: Colors.red,
+                                              inactiveTrackColor: Colors.grey,
+                                            ),
+                                          ],
+                                        ),
+
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                              SizedBox(width: screenWidth*0.02),
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const HomeView()),
+                                      );
+                                    },
+                                    child: Container(
+                                      height: screenHeight * 0.23,
+                                      width: screenWidth * 0.4,// Adjust the height as needed
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.pink),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Total Recipients',
+                                              style: TextStyle(
+                                                fontSize: screenHeight * 0.025,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: screenHeight*0.025),
+                                            Center( // Center horizontally and vertically
+                                              child: Text(
+                                                '$numberOfRecipients',
+                                                style: TextStyle(
+                                                  fontSize: screenHeight * 0.07,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight*0.02),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Navigate to the next page when the container is clicked
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const ManageParcelPage()), // Replace NextPage with your actual next page widget
+                                      );
+                                    },
+                                    child: Container(
+                                      height: screenHeight * 0.23,
+                                      width: screenWidth * 0.4, // Adjust the height as needed
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.amber),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Parcels Hold',
+                                              style: TextStyle(
+                                                fontSize: screenHeight * 0.025,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: screenHeight*0.025),
+                                            Center( // Center horizontally and vertically
+                                              child: Text(
+                                                '$numberOfParcels',
+                                                style: TextStyle(
+                                                  fontSize: screenHeight * 0.07,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
+                        SizedBox(height: screenHeight*0.04),
                       ],
                     ),
                   ),
-                  SizedBox(height: screenHeight*0.04),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ServoControlApp()),
-                      );
-                    },
-                    child: Container(
-                      width: screenWidth*0.63,
-                      height: screenHeight*0.07,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(17),
-                          color: TColor.button
+                ),
+              ],
+            ),
+            Positioned(
+              bottom: 5,
+                right: 5,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Navigate to ParcelCollectPage and wait for result
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OCRPage(),
                       ),
-                      child: Text(
-                        "Control Box",
-                        style: TextStyle(
-                            fontSize: screenHeight * 0.03,
-                            color: TColor.white,
-                            fontWeight: FontWeight.w500
-                        ),
-                      ),
-                    ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    alignment: Alignment.center,
+                    backgroundColor: Colors.purple,
+                    padding: EdgeInsets.all(screenWidth * 0.04),
                   ),
-                  SizedBox(height: screenHeight * 0.1764),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                      //margin: EdgeInsets.only(bottom: 5), // Adjust the margin as needed
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          // Navigate to ParcelCollectPage and wait for result
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OCRPage(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          backgroundColor: Colors.white,
-                          padding: EdgeInsets.all(screenWidth * 0.045),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Scan Here',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: screenHeight * 0.02,
-                              ),
-                            ),
-                            //SizedBox(height: screenHeight * 0.03),
-                            Icon(
-                              Icons.document_scanner,
-                              size: iconSize,
-                              color: Colors.black,
-                            ),
-                            // Image.asset(
-                            //   "assets/img/scan.png",
-                            //   width: screenWidth * 0.05,
-                            //   height: screenHeight * 0.05,
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  child: Icon(
+                    Icons.document_scanner,
+                    size: iconSize,
+                    color: Colors.black,
                   ),
-                ],
-              ),
+                ),
+                ),
+            ],
+          ),
         ),
       ),
 

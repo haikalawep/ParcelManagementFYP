@@ -62,6 +62,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
           return Parcel(
             nameR: data['nameR'] ?? '',
             dateManaged: (data['dateManaged'] as Timestamp).toDate(),
+            collectDate: (data['collectDate'] as Timestamp).toDate(),
             code: data['code'] ?? '',
             color: data['color'] ?? '',
             charge: int.parse(data['charge'].toString()) ?? 0,
@@ -72,6 +73,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
             status: data['status'] ?? '',
             qrURL: data['qrURL'] ?? '',
             trackNo: data['trackNo'] ?? '',
+            parcelID: int.parse(data['parcelID'].toString()) ?? 0,
           );
         }).toList();
 
@@ -145,8 +147,8 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
       backgroundColor: TColor.background,
 
       appBar: AppBar(
-        title: const Text('Manage Parcel'),
-        backgroundColor: TColor.topBar,
+        title: const Text('Manage Parcel', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: TColor.primary,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -155,11 +157,17 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
           ],
           labelStyle: TextStyle(fontSize: screenHeight * 0.025, fontWeight: FontWeight.bold), // Increase font size for selected tab
           unselectedLabelStyle: TextStyle(fontSize: screenHeight * 0.015,),
+          indicator: BoxDecoration(
+            color: TColor.secondaryText, // Set the desired background color
+            borderRadius: BorderRadius.circular(5), // Optional: adjust the border radius
+          ),
+          indicatorSize: TabBarIndicatorSize.tab, // or TabBarIndicatorSize.label, depending on your preference
+          indicatorWeight: 5,
         ),
       ),
       body: isLoading
           ? const Center(
-        child: CircularProgressIndicator(),
+        child: RefreshProgressIndicator(),
       )
           : TabBarView(
         controller: _tabController,
@@ -283,8 +291,8 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
               TabBar(
                 controller: _boxTabController,
                 tabs: const[
-                  Tab(text: 'Out Box'),
-                  Tab(text: 'In Box'),
+                  Tab(text: 'Not Ready'),
+                  Tab(text: 'Ready'),
                 ],
                 labelStyle: TextStyle(fontSize: screenHeight * 0.025, fontWeight: FontWeight.bold), // Adjust label style if needed
                 unselectedLabelStyle: TextStyle(fontSize: screenHeight * 0.015,),
@@ -380,7 +388,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                         itemCount: filteredBoxParcelList.where((parcel) => parcel.status == 'In Box').length,
                         itemBuilder: (context, index) {
                           final parcel = filteredBoxParcelList.where((parcel) => parcel.status == 'In Box').toList()[index];
-                          bool isDateAfterNow = parcel.dateManaged.isAfter(DateTime.now());
+                          bool isDateAfterNow = parcel.collectDate.isAfter(DateTime.now());
                           return Container(
                             margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                             decoration: BoxDecoration(

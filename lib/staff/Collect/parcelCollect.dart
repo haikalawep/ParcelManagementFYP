@@ -33,28 +33,28 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
-          Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  // if (result != null)
-                  //   Text(
-                  //     'Data: ${result!.code}',
-                  //   )
-                  // else
-                  //   const Text('Scan the QR Code'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[],
-                  ),
-                ],
-              ),
-            ),
-          )
+          // Expanded(
+          //   flex: 1,
+          //   child: FittedBox(
+          //     fit: BoxFit.contain,
+          //     child: Column(
+          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //       children: <Widget>[
+          //         // if (result != null)
+          //         //   Text(
+          //         //     'Data: ${result!.code}',
+          //         //   )
+          //         // else
+          //         //   const Text('Scan the QR Code'),
+          //         Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           crossAxisAlignment: CrossAxisAlignment.center,
+          //           children: <Widget>[],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );
@@ -97,11 +97,11 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
           List<String> scannedDataList = scannedQRData.split(';');
 
           if (scannedDataList.length >= 1) {
-            int parcelNo = int.parse(scannedDataList[0]);
+            int parcelID = int.parse(scannedDataList[0]);
 
             QuerySnapshot querySnapshot = await FirebaseFirestore.instance
                 .collection('parcelD')
-                .where('parcelNo', isEqualTo: parcelNo)
+                .where('parcelID', isEqualTo: parcelID)
                 .get();
 
             if (querySnapshot.docs.isNotEmpty) {
@@ -111,6 +111,7 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
               String nameR = docSnapshot['nameR'];
               String code = docSnapshot['code'];
               int charge = docSnapshot['charge'];
+              int parcelNo = docSnapshot['parcelNo'];
               String size = docSnapshot['size'];
               String color = docSnapshot['color'];
               String phoneR = docSnapshot['phoneR'];
@@ -156,6 +157,7 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
                             'status': 'Collected',
                             'optCollect': optCollect,
                             'trackNo': trackNo,
+                            'parcelID': parcelID,
                           });
 
                           await docSnapshot.reference.delete();

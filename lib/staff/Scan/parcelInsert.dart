@@ -116,7 +116,6 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
     generateParcelCode(today);
   }
 
-
   final List<String> sizes = ['Small', 'Medium', 'Big', 'Extra Big'];
 
   void sendSMS(String recipientPhoneNumber) async {
@@ -168,7 +167,6 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
     }
   }
 
-
   Future<void> insertParcel() async {
     try {
       // Access the text values from the controllers
@@ -180,13 +178,10 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
       String trackNumber = txtTrackingNumber.text;
 
       Timestamp currentDate = Timestamp.now();
-
       // Get the last used parcel number
       int lastParcelNo = await getLastParcelNumber();
-
       // Increment the last used parcel number for the next insertion
       int newParcelNo = lastParcelNo + 1;
-
       // Generate a unique ID using a prefix and the new parcel number
       String uniqueId = 'parcel_$newParcelNo';
 
@@ -205,6 +200,7 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
         'status': 'Not Collected',
         'optCollect': 'Counter',
         'dateManaged': currentDate,
+        'collectDate': currentDate,
         'trackNo': trackNumber, // Store the current date
       });
 
@@ -213,6 +209,18 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
 
       // Update Firestore with the QR code URL
       await docRef.update({'qrURL': qrURL});
+
+      int qrDataInt;
+      try {
+        qrDataInt = int.parse(qrData);
+      } catch (e) {
+        // Handle the error, perhaps log it or take another action
+        print('Error: qrData is not a valid integer');
+        return;  // Exit the function or handle accordingly
+      }
+
+// Update Firestore with the parcel ID as an integer
+      await docRef.update({'parcelID': qrDataInt});
 
       // Update the last used parcel number document
       await updateLastParcelNumber(newParcelNo);

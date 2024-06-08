@@ -84,12 +84,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
           SizedBox(height: screenHeight * 0.03),
-          GestureDetector( onTap: () {Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LoginView(),
-            ),
-          );
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginView(),
+                ),
+              );
             },
             child: Container(
               width: screenWidth*0.63,

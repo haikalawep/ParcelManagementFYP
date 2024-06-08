@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parcelmanagement/class/parcel_class.dart'; // Import the Parcel class
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:parcelmanagement/class/sMessage_class.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
+import 'package:parcelmanagement/common/icon_btn.dart';
 import 'package:parcelmanagement/customer/StatusDetail.dart';
+import 'package:parcelmanagement/customer/notificationPage.dart';
+import 'package:parcelmanagement/customer/profilePage.dart';
 
 class ParcelStatusView extends StatefulWidget {
   final User user; // Define a User object to hold user data
@@ -18,13 +22,16 @@ class ParcelStatusView extends StatefulWidget {
 class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStateMixin{
   TabController? _tabController;
   List<Parcel> parcelList = [];
+  List<StaffMessage> staffMessageList = [];
   bool isLoading = true;
+  int notificationCount = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     fetchStatusData();
+    fetchNotificationCount();
   }
 
   void dispose() {
@@ -59,6 +66,7 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
               return Parcel(
                 nameR: data['nameR'] ?? '',
                 dateManaged: (data['dateManaged'] as Timestamp).toDate(),
+                collectDate: (data['collectDate'] as Timestamp).toDate(),
                 code: data['code'] ?? '',
                 color: data['color'] ?? '',
                 charge: data['charge'] ?? '',
@@ -69,6 +77,7 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
                 status: data['status'] ?? '',
                 qrURL: data['qrURL'] ?? '',
                 trackNo: data['trackNo'] ?? '',
+                parcelID: data['parcelID'] ?? '',
               );
             }).toList();
             isLoading = false;
@@ -118,6 +127,52 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
     );
   }
 
+  Future<void> fetchNotificationCount() async {
+    try {
+      // Query Firestore for staff messages with the user's parcelNo
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: widget.user.email)
+          .limit(1)
+          .get();
+
+      // Check if any customer documents were found
+      if (userSnapshot.docs.isNotEmpty) {
+        // Extract the customer's phone number from the first document in the snapshot
+        String customerPhoneNumber = (userSnapshot.docs.first.data() as Map<String, dynamic>)['mobile'] ?? '';
+
+        // Query Firestore for parcels with matching phone numbers
+        QuerySnapshot parcelSnapshot = await FirebaseFirestore.instance
+            .collection('parcelD')
+            .where('phoneR', isEqualTo: customerPhoneNumber)
+            .get();
+
+        QuerySnapshot messageSnapshot = await FirebaseFirestore.instance
+            .collection('staffMessages')
+            .where('parcelNo', whereIn: [
+          for (var doc in parcelSnapshot.docs)
+            (doc.data() as Map<String, dynamic>)['parcelNo'],
+        ])
+            .get();
+
+        // Update notification count
+        setState(() {
+          notificationCount = messageSnapshot.docs.length;
+        });
+
+      } else {
+        print('Customer document not found for email: ${widget.user.email}');
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
+    } catch (error) {
+      print('Error fetching notification count: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -130,6 +185,21 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
             appBar: AppBar(
               title: const Text('Manage Parcel'),
               backgroundColor: TColor.topBar,
+              actions: [
+                IconBtnWithCounter(
+                  svgSrc: "assets/icons/Notification.svg",
+                  numOfitem: notificationCount,
+                  press: () {
+                    // Navigate to the desired page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationPage(user: widget.user), // Replace with your next page widget
+                      ),
+                    );
+                  },
+                ),
+              ],
               bottom: TabBar(
                 controller: _tabController,
                 tabs: const [
@@ -148,7 +218,7 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
             ),
             body: isLoading
                 ? const Center(
-              child: CircularProgressIndicator(),
+              child: RefreshProgressIndicator(),
             )
                 : TabBarView(
               controller: _tabController,

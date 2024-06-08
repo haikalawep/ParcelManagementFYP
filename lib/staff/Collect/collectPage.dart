@@ -77,96 +77,119 @@ class _CollectViewState extends State<CollectView> {
     final iconSize = screenWidth * 0.15;
 
     return Scaffold(
-      backgroundColor: TColor.background,
-
+      backgroundColor: TColor.secondary,
       appBar: AppBar(
-        title: const Text('Collect'),
-        backgroundColor: TColor.topBar,
+        title: const Text('Collect', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: TColor.primary,
         elevation: 0,
         actions: [
           IconButton(
               icon: const Icon(Icons.logout),
+              color: Colors.white,
               onPressed: () {
                 signUserOut(context);
               }
           ),
         ],
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
+          child: Stack(
             children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: RoundTextfield(
-                    hintText: "Search Recipient",
-                    controller: txtSearch,
-                    left: Container(
-                      alignment: Alignment.center,
-                      width: 30,
-                      child: Image.asset(
-                        "assets/img/search.png",
-                        width: 20,
-                        height: 20,
+              Positioned(
+                top: 0.0,
+                left: 0.0,
+                right: 0.0,
+                bottom: screenHeight* 0.69,
+                child: Container(
+                  height: screenHeight * 0.35,
+                  decoration: BoxDecoration(
+                    color: TColor.primary,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.elliptical(350, 200),
+                      bottomRight: Radius.elliptical(350, 200),
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: RoundTextfield(
+                      hintText: "Search Recipient",
+                      controller: txtSearch,
+                      left: Container(
+                        alignment: Alignment.center,
+                        width: 30,
+                        child: Image.asset(
+                          "assets/img/search.png",
+                          width: 20,
+                          height: 20,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.035),
-                Container(
+                  SizedBox(height: screenHeight * 0.035),
+                  Container(
                     padding: EdgeInsets.all(5),
                     child: Center(
-                        child: Text(
-                          '$parcelsCollectedToday Parcels Collected Today',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: screenHeight * 0.04,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: Text(
+                        '$parcelsCollectedToday Parcels Collected Today',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: screenHeight * 0.04,
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
                     ),
                   ),
-              SizedBox(height: screenHeight * 0.41),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  //margin: EdgeInsets.only(bottom: 5), // Adjust the margin as needed
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // Navigate to ParcelCollectPage and wait for result
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ParcelCollectPage(),
+                  SizedBox(height: screenHeight * 0.41),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      //margin: EdgeInsets.only(bottom: 5), // Adjust the margin as needed
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          // Navigate to ParcelCollectPage and wait for result
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ParcelCollectPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                          backgroundColor: Colors.white,
+                          padding: EdgeInsets.all(screenWidth * 0.045),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      backgroundColor: Colors.white,
-                      padding: EdgeInsets.all(screenWidth * 0.045),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Scan Here',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: screenHeight * 0.02,
-                          ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Scan Here',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: screenHeight * 0.02,
+                              ),
+                            ),
+                            //SizedBox(height: screenHeight * 0.03),
+                            Icon(
+                              Icons.qr_code,
+                              size: iconSize,
+                              color: Colors.black,
+                            ),
+                          ],
                         ),
-                        //SizedBox(height: screenHeight * 0.03),
-                        Icon(
-                          Icons.qr_code,
-                          size: iconSize,
-                          color: Colors.black,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),

@@ -23,7 +23,7 @@ class _StatusDetailState extends State<StatusDetail> {
   bool showQRCode = false;
 
   TextEditingController _optCollectController = TextEditingController();
-  TextEditingController _dateController = TextEditingController();
+  TextEditingController _collectDateController = TextEditingController();
   TextEditingController _qrController = TextEditingController();
 
 
@@ -39,8 +39,8 @@ class _StatusDetailState extends State<StatusDetail> {
     _optCollectController.text = widget.parcel.optCollect;
     _qrController.text = widget.parcel.qrURL;
     selectedCollect = widget.parcel.optCollect;
-    _dateController.text = widget.parcel.dateManaged != null
-        ? DateFormat('yyyy-MM-dd').format(widget.parcel.dateManaged!)
+    _collectDateController.text = widget.parcel.collectDate != null
+        ? DateFormat('yyyy-MM-dd').format(widget.parcel.collectDate!)
         : '';
 
     retrieveQRCode();
@@ -55,6 +55,9 @@ class _StatusDetailState extends State<StatusDetail> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: TColor.background,
 
@@ -74,7 +77,7 @@ class _StatusDetailState extends State<StatusDetail> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: RoundTitleTextfield(
                       title: "Parcel Name",
                       hintText: widget.parcel.nameR,
@@ -91,9 +94,7 @@ class _StatusDetailState extends State<StatusDetail> {
                           //hintStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
+                      SizedBox(width: screenWidth*0.02),
                       Expanded(
                         child: RoundTitleTextfield(
                           title: "Parcel No",
@@ -104,9 +105,7 @@ class _StatusDetailState extends State<StatusDetail> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10, // Adjust the height value to set the desired gap
-                  ),
+                  SizedBox(height: screenHeight*0.01),
                   Row(
                     children: [
                       Expanded(
@@ -116,9 +115,7 @@ class _StatusDetailState extends State<StatusDetail> {
                           enabled: false,
                         ),
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
+                      SizedBox(width: screenWidth*0.02),
                       Expanded(
                         child: RoundTitleTextfield(
                           title: "Phone Number",
@@ -128,11 +125,8 @@ class _StatusDetailState extends State<StatusDetail> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10, // Adjust the height value to set the desired gap
-                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: RoundTitleTextfield(
                       title: "Tracking Number",
                       hintText: widget.parcel.trackNo,
@@ -140,16 +134,15 @@ class _StatusDetailState extends State<StatusDetail> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: RoundTitleTextfield(
                       title: "Color",
                       hintText: widget.parcel.color,
                       enabled: false,
                     ),
                   ),
-
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: DropdownButtonFormField<String>(
                       value: selectedCollect,
                       items: collectOptions.map((String value) {
@@ -178,9 +171,9 @@ class _StatusDetailState extends State<StatusDetail> {
 
                   if (selectedCollect == 'Boxes')
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
                       child: TextFormField(
-                        controller: _dateController,
+                        controller: _collectDateController,
                         decoration: InputDecoration(
                           labelText: "Date of Parcel Retrieval",
                           border: OutlineInputBorder(
@@ -197,16 +190,14 @@ class _StatusDetailState extends State<StatusDetail> {
                           if (pickedDate != null) {
                             setState(() {
                               retrievalDate = pickedDate;
-                              _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                              _collectDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
                             });
                           }
                         },
                       ),
                     ),
-
-
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: RoundTitleTextfield(
                       title: "Size",
                       hintText: widget.parcel.size,
@@ -214,7 +205,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: RoundTitleTextfield(
                       title: "Status",
                       hintText: widget.parcel.status,
@@ -222,13 +213,14 @@ class _StatusDetailState extends State<StatusDetail> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: RoundTitleTextfield(
                       title: "Charge",
                       hintText: 'RM ${widget.parcel.charge.toString()}',
                       enabled: false,
                     ),
                   ),
+                  SizedBox(height: screenHeight * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -244,9 +236,12 @@ class _StatusDetailState extends State<StatusDetail> {
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white, backgroundColor: TColor.button, // Set the text color here
-                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth*0.15,
+                            vertical: screenHeight*0.014,
+                          ), // Adjust padding if needed
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                            borderRadius: BorderRadius.circular(17), // Adjust border radius if needed
                           ),
                         ),
                         child: Text('Save'),
@@ -267,11 +262,11 @@ class _StatusDetailState extends State<StatusDetail> {
                                   type: MaterialType.transparency,
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 32,
-                                      vertical: 36,
+                                      horizontal: 10,
+                                      vertical: 10,
                                     ),
-                                    height: MediaQuery.of(context).size.height * 0.60,
-                                    width: MediaQuery.of(context).size.width * 0.860,
+                                    width: screenWidth*0.9,
+                                    height: screenHeight*0.7,
                                     decoration: const BoxDecoration(
                                       color: Colors.black,
                                       gradient: LinearGradient(
@@ -294,8 +289,8 @@ class _StatusDetailState extends State<StatusDetail> {
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.all(16),
-                                          height: 340,
-                                          width: 340,
+                                          width: screenWidth*0.7,
+                                          height: screenHeight*0.4,
                                           decoration: const BoxDecoration(
                                             color: Colors.white,
                                             borderRadius: BorderRadius.all(
@@ -317,14 +312,14 @@ class _StatusDetailState extends State<StatusDetail> {
                                             fit: BoxFit.fill,
                                           ),
                                         ),
-                                        const Column(
+                                        Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Recipient Generated QR Code!',
                                               style: TextStyle(
                                                 fontFamily: 'poppins_bold',
-                                                fontSize: 30,
+                                                fontSize: screenHeight*0.025,
                                                 color: Color(0xFF6565FF),
                                               ),
                                             ),
@@ -332,7 +327,7 @@ class _StatusDetailState extends State<StatusDetail> {
                                               "This is your unique QR code for another person to scan",
                                               style: TextStyle(
                                                 fontFamily: 'poppins_regular',
-                                                fontSize: 14,
+                                                fontSize: screenHeight*0.025,
                                               ),
                                             ),
                                           ],
@@ -419,9 +414,12 @@ class _StatusDetailState extends State<StatusDetail> {
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white, backgroundColor: TColor.moreButton, // Set the text color here
-                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth*0.05,
+                            vertical: screenHeight*0.014,
+                          ), // Adjust padding if needed
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
+                            borderRadius: BorderRadius.circular(17), // Adjust border radius if needed
                           ),
                         ),
                         child: Text(showQRCode ? 'Hide QR Code' : 'Show QR Code'),
@@ -480,7 +478,7 @@ class _StatusDetailState extends State<StatusDetail> {
     Map<String, dynamic> updatedData = {
       'optCollect': newOptCollect,
       'status': newStatus,
-      'dateManaged': newRetrievalDate,
+      'collectDate': newRetrievalDate,
     };
 
 

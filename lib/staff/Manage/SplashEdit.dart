@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/staff/Manage/manage_detailParcel.dart';
+import 'package:parcelmanagement/staff/Scan/scanPage.dart';
 
 
 class SplashEditView extends StatelessWidget {
@@ -12,7 +13,7 @@ class SplashEditView extends StatelessWidget {
     Timer(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ManageParcelPage()),
+        MaterialPageRoute(builder: (context) => const ScanView()),
       );
     });
     return const SafeArea(

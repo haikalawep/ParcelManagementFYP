@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:parcelmanagement/common/color_extension.dart';
 
-class ServoControlApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ServoControlScreen(),
-    );
-  }
-}
 
 class ServoControlScreen extends StatefulWidget {
+  const ServoControlScreen({Key? key}) : super(key: key);
+
   @override
-  _ServoControlScreenState createState() => _ServoControlScreenState();
+  State<ServoControlScreen> createState() => _ServoControlScreenState();
+
 }
 
 class _ServoControlScreenState extends State<ServoControlScreen> {
@@ -30,6 +25,9 @@ class _ServoControlScreenState extends State<ServoControlScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: TColor.background,
       appBar: AppBar(
@@ -40,19 +38,62 @@ class _ServoControlScreenState extends State<ServoControlScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ElevatedButton(
+
+            GestureDetector(
+              onTap: () {
+                _setServoAngle(1000);
+              },
+              child: Container(
+                width: screenWidth*0.63,
+                height: screenHeight*0.07,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(17),
+                    color: TColor.button),
+                child: Text(
+                  "Open",
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.03, color: TColor.white, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.03),
+            GestureDetector(
+              onTap: () {
+                _setServoAngle(2000);
+              },
+              child: Container(
+                width: screenWidth*0.63,
+                height: screenHeight*0.07,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(17),
+                    color: TColor.moreButton
+                ),
+                child: Text(
+                  "Close",
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.03,
+                      color: TColor.white,
+                      fontWeight: FontWeight.w500
+                  ),
+                ),
+              ),
+            ),
+
+            /*ElevatedButton(
               onPressed: () {
                 _setServoAngle(1000);  // Set servo angle to 90 degrees
               },
               child: Text('Open'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight*0.04),
             ElevatedButton(
               onPressed: () {
                 _setServoAngle(2000);  // Set servo angle to 0 degrees
               },
               child: Text('Close'),
-            ),
+            ),*/
           ],
         ),
       ),
