@@ -180,14 +180,14 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
 
     return SafeArea(
         child: Scaffold(
-            backgroundColor: TColor.background,
+            backgroundColor: TColor.secondary,
 
             appBar: AppBar(
-              title: const Text('Manage Parcel'),
-              backgroundColor: TColor.topBar,
+              title: const Text('Manage Status', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+              backgroundColor: TColor.primary,
               actions: [
                 IconBtnWithCounter(
-                  svgSrc: "assets/icons/Notification.svg",
+                  svgSrc: "assets/icons/Notification (1).svg",
                   numOfitem: notificationCount,
                   press: () {
                     // Navigate to the desired page
@@ -206,8 +206,8 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
                   Tab(text: 'Counter'),
                   Tab(text: 'Box', ),
                 ],
-                labelStyle: TextStyle(fontSize: screenHeight * 0.025, fontWeight: FontWeight.bold), // Increase font size for selected tab
-                unselectedLabelStyle: TextStyle(fontSize: screenHeight * 0.015),
+                labelStyle: TextStyle(fontSize: screenHeight * 0.025, fontWeight: FontWeight.bold, color: Colors.white), // Increase font size for selected tab
+                unselectedLabelStyle: TextStyle(fontSize: screenHeight * 0.015, color: Colors.white),
                 indicator: BoxDecoration(
                   color: TColor.background, // Set the desired background color
                   borderRadius: BorderRadius.circular(5), // Optional: adjust the border radius
@@ -215,6 +215,8 @@ class _ParcelStatusState extends State<ParcelStatusView> with TickerProviderStat
                 indicatorSize: TabBarIndicatorSize.tab, // or TabBarIndicatorSize.label, depending on your preference
                 indicatorWeight: 5,
               ),
+              automaticallyImplyLeading: false,
+              centerTitle: true,
             ),
             body: isLoading
                 ? const Center(

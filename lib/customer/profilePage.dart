@@ -167,13 +167,28 @@ class _ProfileViewState extends State<ProfileView> {
 
     return SafeArea(
         child: Scaffold(
-          backgroundColor: TColor.background,
+          backgroundColor: TColor.secondary,
+          appBar: AppBar(
+            title: const Text("My Account", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+            actions: [
+              IconButton(
+                  icon: const Icon(Icons.logout),
+                  color: Colors.white,
+                  onPressed: () {
+                    signUserOut(context);
+                  }
+              ),
+            ],
+            backgroundColor: TColor.primary,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+          ),
 
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: screenHeight * 0.01),
+                /*SizedBox(height: screenHeight * 0.01),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
@@ -201,7 +216,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ],
                   ),
-                ),
+                ),*/
                 SizedBox(height: screenHeight * 0.02),
                 Stack(
                   children: [
@@ -215,28 +230,37 @@ class _ProfileViewState extends State<ProfileView> {
                     // ),
                     GestureDetector(
                       onTap: () async { _pickImage(); },
-                      child: CircleAvatar(
-                        radius: radius,
-                        backgroundColor: TColor.placeholder,
-                        backgroundImage: imageUrl != null
-                            ? NetworkImage(imageUrl!)
-                            : null,
-                        child: imageUrl == null
-                            ? Icon(
-                          Icons.person,
-                          size: iconSize,
-                          color: TColor.secondaryText,
-                        )
-                            : null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.black, // Adjust border color here
+                            width: 4.0, // Adjust border width here
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: radius,
+                          backgroundColor: TColor.placeholder,
+                          backgroundImage: imageUrl != null
+                              ? NetworkImage(imageUrl!)
+                              : null,
+                          child: imageUrl == null
+                              ? Icon(
+                            Icons.person,
+                            size: iconSize,
+                            color: TColor.secondaryText,
+                          )
+                              : null,
+                        ),
                       ),
                     ),
                     Positioned(
                       bottom: 0,
-                      right: 10,
+                      right:6,
                       child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: TColor.white),
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: Colors.amber),
                         child: const Icon(
                           CupertinoIcons.pencil,
                           color: Colors.black,
@@ -255,15 +279,15 @@ class _ProfileViewState extends State<ProfileView> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.01),
+                SizedBox(height: screenHeight * 0.02),
                 _buildInputField(context, 'Name', _nameUserController.text, Icon(Icons.person), controller: _nameUserController),
-                SizedBox(height: screenHeight * 0.01),
+                SizedBox(height: screenHeight * 0.02),
                 _buildInputField(context, 'Email', _emailUserController.text, Icon(Icons.email),controller: _emailUserController),
-                SizedBox(height: screenHeight * 0.01),
+                SizedBox(height: screenHeight * 0.02),
                 _buildInputField(context, 'Phone', _mobileUserController.text, Icon(Icons.phone), controller: _mobileUserController),
-                SizedBox(height: screenHeight * 0.01),
+                SizedBox(height: screenHeight * 0.02),
                 _buildInputField(context, 'College', _collegeUserController.text, Icon(Icons.my_location), controller: _collegeUserController),
-                SizedBox(height: screenHeight * 0.01),
+                SizedBox(height: screenHeight * 0.02),
 
                 //itemProfile('Name', _nameUserController, Icon(Icons.person)),
                 //const SizedBox(height: 10),
@@ -316,7 +340,7 @@ class _ProfileViewState extends State<ProfileView> {
                   onTap: () {
                     _showSaveConfirmationDialog();
                   },
-                  child: Container(width: screenWidth*0.5, height: screenHeight*0.07, alignment: Alignment.center, decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), color: TColor.button), child: Text(
+                  child: Container(width: screenWidth*0.5, height: screenHeight*0.07, alignment: Alignment.center, decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), color: TColor.moreButton), child: Text(
                     "Save",
                     style: TextStyle(
                         fontSize: screenHeight * 0.03, color: TColor.white, fontWeight: FontWeight.w500),
@@ -353,7 +377,7 @@ class _ProfileViewState extends State<ProfileView> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02), // Adjust horizontal padding as needed
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04), // Adjust horizontal padding as needed
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: labelText,
@@ -362,7 +386,7 @@ class _ProfileViewState extends State<ProfileView> {
             borderRadius: BorderRadius.circular(20),
           ),
           filled: true,
-          fillColor: TColor.topBar,
+          fillColor: Colors.white,
           contentPadding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 16.0),
         ),
         child: TextField(

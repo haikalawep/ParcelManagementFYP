@@ -148,7 +148,7 @@ class _RegisterViewState extends State<RegisterPage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9E5DE),
+      backgroundColor: TColor.secondary,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -179,6 +179,8 @@ class _RegisterViewState extends State<RegisterPage> {
                       TextFormField(
                         maxLines: 1,
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
                           prefixIcon: const Icon(Icons.person),
                           hintText: 'Full Name',
                           border: OutlineInputBorder(
@@ -197,6 +199,8 @@ class _RegisterViewState extends State<RegisterPage> {
                       TextFormField(
                         maxLines: 1,
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
                           prefixIcon: const Icon(Icons.email),
                           hintText: 'Email',
                           border: OutlineInputBorder(
@@ -219,6 +223,8 @@ class _RegisterViewState extends State<RegisterPage> {
                             child: TextFormField(
                               maxLines: 1,
                               decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
                                 hintText: 'Phone',
                                 prefixIcon: const Icon(Icons.mobile_friendly),
                                 border: OutlineInputBorder(
@@ -274,6 +280,8 @@ class _RegisterViewState extends State<RegisterPage> {
                         maxLines: 1,
                         obscureText: true,
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
                           prefixIcon: const Icon(Icons.lock),
                           hintText: 'Password',
                           border: OutlineInputBorder(
@@ -296,6 +304,8 @@ class _RegisterViewState extends State<RegisterPage> {
                         maxLines: 1,
                         obscureText: true,
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
                           prefixIcon: const Icon(Icons.lock),
                           hintText: 'Confirm Password',
                           border: OutlineInputBorder(
@@ -316,23 +326,25 @@ class _RegisterViewState extends State<RegisterPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        width: 600,
-                        height: 60,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            signUpUser();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: TColor.moreButton,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
+                      GestureDetector(
+                        onTap: () {
+                          signUpUser();
+                        },
+                        child: Container(
+                          width: screenWidth*0.63,
+                          height: screenHeight*0.07,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(17),
+                              color: TColor.moreButton
                           ),
                           child: Text(
                             "Sign Up",
                             style: TextStyle(
-                                fontSize: 22, color: TColor.white),
+                                fontSize: screenHeight * 0.03,
+                                color: TColor.white,
+                                fontWeight: FontWeight.w500
+                            ),
                           ),
                         ),
                       ),

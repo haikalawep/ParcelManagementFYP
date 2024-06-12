@@ -30,6 +30,9 @@ class _StatusDetailState extends State<StatusDetail> {
   String? selectedCollect;
   DateTime? retrievalDate;
 
+  late double screenWidth;
+  late double screenHeight;
+
   final List<String> collectOptions = ['Counter', 'Boxes'];
 
   @override
@@ -44,6 +47,13 @@ class _StatusDetailState extends State<StatusDetail> {
         : '';
 
     retrieveQRCode();
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        screenWidth = MediaQuery.of(context).size.width;
+        screenHeight = MediaQuery.of(context).size.height;
+      });
+    });
   }
 
   Future<bool> _handleBackButtonPress(BuildContext context) async {
@@ -59,21 +69,37 @@ class _StatusDetailState extends State<StatusDetail> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: TColor.background,
+      backgroundColor: TColor.secondary,
 
       appBar: AppBar(
-        title: Text('Parcel Details'),
-        backgroundColor: TColor.topBar,
+        title: const Text("Parcel Detail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: TColor.primary,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back_ios),
+          color: Colors.white,
           onPressed: () {
             Navigator.pop(context); // Navigate back
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save, color: Colors.white),
+            onPressed: () {
+              _showSaveConfirmationDialog();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.qr_code_sharp, color: Colors.white),
+            onPressed: () {
+              //_showDeleteConfirmationDialog();
+              showQR();
+            },
+          ),
+        ],
       ),
           body: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(12),
               child: Column(
                 children: [
                   Padding(
@@ -175,6 +201,7 @@ class _StatusDetailState extends State<StatusDetail> {
                       child: TextFormField(
                         controller: _collectDateController,
                         decoration: InputDecoration(
+                          fillColor: Colors.pink,
                           labelText: "Date of Parcel Retrieval",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -221,7 +248,7 @@ class _StatusDetailState extends State<StatusDetail> {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.02),
-                  Row(
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
@@ -276,16 +303,16 @@ class _StatusDetailState extends State<StatusDetail> {
                                           Color(0xFFFEEDFC),
                                           Colors.white,
                                           Color(0xFFE4E6F7),
-                                          Color(0xFFE2E5F5),
+                                          Color(0xff673F69),
                                         ],
                                         tileMode: TileMode.mirror,
                                       ),
                                       borderRadius: BorderRadius.all(
-                                        Radius.circular(20),
+                                        Radius.circular(15),
                                       ),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.all(16),
@@ -302,21 +329,21 @@ class _StatusDetailState extends State<StatusDetail> {
                                               colors: <Color>[
                                                 Colors.white,
                                                 Color(0xFFE4E6F7),
-                                                Colors.white,
+                                                Colors.green,
                                               ],
-                                              tileMode: TileMode.mirror,
+                                              tileMode: TileMode.clamp,
                                             ),
                                           ),
                                           child: Image.network(
                                             qrURL, // Use the qrURL for the QR code image URL
-                                            fit: BoxFit.fill,
+                                            fit: BoxFit.contain,
                                           ),
                                         ),
+                                        SizedBox(height: screenHeight*0.03),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Recipient Generated QR Code!',
+                                              'Your Generated QR Code!',
                                               style: TextStyle(
                                                 fontFamily: 'poppins_bold',
                                                 fontSize: screenHeight*0.025,
@@ -324,83 +351,11 @@ class _StatusDetailState extends State<StatusDetail> {
                                               ),
                                             ),
                                             Text(
-                                              "This is your unique QR code for another person to scan",
+                                              "This is your unique QR code for parcel collection.",
                                               style: TextStyle(
                                                 fontFamily: 'poppins_regular',
-                                                fontSize: screenHeight*0.025,
+                                                fontSize: screenHeight*0.02,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets.all(12),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: const BorderRadius.all(
-                                                      Radius.circular(12),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        blurRadius: 32.0,
-                                                        color: const Color.fromARGB(
-                                                            255, 133, 142, 212)
-                                                            .withOpacity(0.68),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  // child: const Icon(
-                                                  //   EvaIcons.shareOutline,
-                                                  //   color: Color(0xFF6565FF),
-                                                  // ),
-                                                ),
-                                                //const Gap(8),
-                                                const Text(
-                                                  "Share",
-                                                  style: TextStyle(
-                                                    fontFamily: 'poppins_semi_bold',
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            //const Gap(40),
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets.all(12),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius: const BorderRadius.all(
-                                                      Radius.circular(12),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        blurRadius: 32.0,
-                                                        color: const Color.fromARGB(
-                                                            255, 133, 142, 212)
-                                                            .withOpacity(0.68),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  // child: const Icon(
-                                                  //   EvaIcons.saveOutline,
-                                                  //   color: Color(0xFF6565FF),
-                                                  // ),
-                                                ),
-                                                //const Gap(8),
-                                                const Text(
-                                                  "Save",
-                                                  style: TextStyle(
-                                                    fontFamily: 'poppins_semi_bold',
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
                                             ),
                                           ],
                                         ),
@@ -425,13 +380,136 @@ class _StatusDetailState extends State<StatusDetail> {
                         child: Text(showQRCode ? 'Hide QR Code' : 'Show QR Code'),
                       ),
                     ],
-                  ),
+                  ),*/
                 ],
               ),
             ),
           ),
         );
 
+  }
+
+  void _showSaveConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Save'),
+          content: const Text('Are you sure you want to save the option collection?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                updateParcel();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SplashUpdateView(user: widget.user)),
+                );
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showQR() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Material(
+            type: MaterialType.transparency,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 10,
+              ),
+              width: screenWidth * 0.9,
+              height: screenHeight * 0.7,
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment(0.8, 1),
+                  colors: <Color>[
+                    Color(0xFFFEEDFC),
+                    Colors.white,
+                    Color(0xFFE4E6F7),
+                    Color(0xff673F69),
+                  ],
+                  tileMode: TileMode.mirror,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    width: screenWidth * 0.7,
+                    height: screenHeight * 0.4,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(60),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment(0.8, 1),
+                        colors: <Color>[
+                          Colors.white,
+                          Color(0xFFE4E6F7),
+                          Colors.green,
+                        ],
+                        tileMode: TileMode.clamp,
+                      ),
+                    ),
+                    child: Image.network(
+                      qrURL,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.03),
+                  Column(
+                    children: [
+                      Text(
+                        'Your Generated QR Code!',
+                        style: TextStyle(
+                          fontFamily: 'poppins_bold',
+                          fontSize: screenHeight * 0.025,
+                          color: Color(0xFF6565FF),
+                        ),
+                      ),
+                      Text(
+                        "This is your unique QR code for parcel collection.",
+                        style: TextStyle(
+                          fontFamily: 'poppins_regular',
+                          fontSize: screenHeight * 0.02,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    // Toggle showQRCode flag
+    setState(() {
+      showQRCode = !showQRCode;
+    });
   }
 
   void sendMessage(int parcelNo, String messageText, {DateTime? retrievalDate}) {

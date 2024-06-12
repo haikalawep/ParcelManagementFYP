@@ -71,18 +71,26 @@ class _ParcelDetailState extends State<ParcelDetail> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: TColor.background,
+      backgroundColor: TColor.secondary,
       appBar: AppBar(
-        title: Text('Parcel Details'),
+        title: const Text("Parcel Detail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: TColor.primary,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context); // Navigate back
+          },
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.done),
+            icon: Icon(Icons.edit, color: Colors.white),
             onPressed: () {
               _showCompleteConfirmationDialog();
             },
           ),
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: Icon(Icons.delete, color: Colors.white),
             onPressed: () {
               _showDeleteConfirmationDialog();
             },
@@ -91,7 +99,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(12),
           child: Column(
             children: [
               Padding(
@@ -283,7 +291,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(17),
-                          color: TColor.button
+                          color: TColor.button,
                       ),
                       child: Text(
                         "Edit",
@@ -295,25 +303,6 @@ class _ParcelDetailState extends State<ParcelDetail> {
                       ),
                     ),
                   ),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     // Update database with new values
-                  //     // You can call a function here to update the database
-                  //     updateParcel();
-                  //     Navigator.pushReplacement(
-                  //       context,
-                  //       MaterialPageRoute(builder: (context) => SplashEditView()),
-                  //     );
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     foregroundColor: Colors.white, backgroundColor: TColor.button, // Set the text color here
-                  //     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12), // Adjust padding if needed
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(8), // Adjust border radius if needed
-                  //     ),
-                  //   ),
-                  //   child: Text('Edit'),
-                  // ),
                   if (qrURL.isNotEmpty && showQRCode)
                     Image.network(
                       qrURL,
@@ -345,7 +334,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                       Color(0xFFFEEDFC),
                                       Colors.white,
                                       Color(0xFFE4E6F7),
-                                      Color(0xFFE2E5F5),
+                                      Color(0xff673F69),
                                     ],
                                     tileMode: TileMode.mirror,
                                   ),
@@ -361,7 +350,6 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                       width: screenWidth*0.7,
                                       height: screenHeight*0.4,
                                       decoration: const BoxDecoration(
-                                        color: Colors.white,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(60),
                                         ),
@@ -371,9 +359,9 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                           colors: <Color>[
                                             Colors.white,
                                             Color(0xFFE4E6F7),
-                                            Colors.white,
+                                            Colors.green,
                                           ],
-                                          tileMode: TileMode.mirror,
+                                          tileMode: TileMode.decal,
                                         ),
                                       ),
                                       child: Image.network(
@@ -381,6 +369,7 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                         fit: BoxFit.contain,
                                       ),
                                     ),
+                                    SizedBox(height: screenHeight*0.03),
                                     Column(
                                       children: [
                                         Text(
@@ -392,83 +381,11 @@ class _ParcelDetailState extends State<ParcelDetail> {
                                           ),
                                         ),
                                         Text(
-                                          "This is your unique QR code for another person to scan",
+                                          "This is your unique QR code for parcel collection.",
                                           style: TextStyle(
                                             fontFamily: 'poppins_regular',
-                                            fontSize: screenHeight*0.025,
+                                            fontSize: screenHeight*0.02,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(12),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    blurRadius: 32.0,
-                                                    color: const Color.fromARGB(
-                                                        255, 133, 142, 212)
-                                                        .withOpacity(0.68),
-                                                  ),
-                                                ],
-                                              ),
-                                              // child: const Icon(
-                                              //   EvaIcons.shareOutline,
-                                              //   color: Color(0xFF6565FF),
-                                              // ),
-                                            ),
-                                            //const Gap(8),
-                                            const Text(
-                                              "Share",
-                                              style: TextStyle(
-                                                fontFamily: 'poppins_semi_bold',
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        //const Gap(40),
-                                        Column(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(5),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    blurRadius: 32.0,
-                                                    color: const Color.fromARGB(
-                                                        255, 133, 142, 212)
-                                                        .withOpacity(0.68),
-                                                  ),
-                                                ],
-                                              ),
-                                              // child: const Icon(
-                                              //   EvaIcons.saveOutline,
-                                              //   color: Color(0xFF6565FF),
-                                              // ),
-                                            ),
-                                            //const Gap(8),
-                                            const Text(
-                                              "Save",
-                                              style: TextStyle(
-                                                fontFamily: 'poppins_semi_bold',
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ],
                                         ),
                                       ],
                                     ),
@@ -596,7 +513,8 @@ class _ParcelDetailState extends State<ParcelDetail> {
         .then((querySnapshot) {
       // Check if the document exists
       if (querySnapshot.docs.isNotEmpty) {
-        // Get the document ID
+        // Get the document IDhistname -I
+
         String docId = querySnapshot.docs.first.id;
 
         // Delete the document from Firestore

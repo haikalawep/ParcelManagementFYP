@@ -165,6 +165,7 @@ class _ScanViewState extends State<ScanView> {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               GestureDetector(
                                 onTap: () {
@@ -174,7 +175,7 @@ class _ScanViewState extends State<ScanView> {
                                   );
                                 },
                                 child: Container(
-                                  height: screenHeight * 0.35,
+                                  height: screenHeight * 0.41,
                                   width: screenWidth * 0.4,
                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.purpleAccent),
                                   child: Padding(
@@ -246,7 +247,7 @@ class _ScanViewState extends State<ScanView> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: screenWidth*0.02),
+
                               Column(
                                 children: [
                                   GestureDetector(
@@ -257,7 +258,7 @@ class _ScanViewState extends State<ScanView> {
                                       );
                                     },
                                     child: Container(
-                                      height: screenHeight * 0.23,
+                                      height: screenHeight * 0.2,
                                       width: screenWidth * 0.4,// Adjust the height as needed
                                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.pink),
                                       child: Padding(
@@ -268,16 +269,16 @@ class _ScanViewState extends State<ScanView> {
                                             Text(
                                               'Total Recipients',
                                               style: TextStyle(
-                                                fontSize: screenHeight * 0.025,
+                                                fontSize: screenHeight * 0.023,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            SizedBox(height: screenHeight*0.025),
+                                            SizedBox(height: screenHeight*0.02),
                                             Center( // Center horizontally and vertically
                                               child: Text(
                                                 '$numberOfRecipients',
                                                 style: TextStyle(
-                                                  fontSize: screenHeight * 0.07,
+                                                  fontSize: screenHeight * 0.065,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -287,7 +288,7 @@ class _ScanViewState extends State<ScanView> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: screenHeight*0.02),
+                                  SizedBox(height: screenHeight*0.01),
                                   GestureDetector(
                                     onTap: () {
                                       // Navigate to the next page when the container is clicked
@@ -297,7 +298,7 @@ class _ScanViewState extends State<ScanView> {
                                       );
                                     },
                                     child: Container(
-                                      height: screenHeight * 0.23,
+                                      height: screenHeight * 0.20,
                                       width: screenWidth * 0.4, // Adjust the height as needed
                                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.amber),
                                       child: Padding(
@@ -308,16 +309,16 @@ class _ScanViewState extends State<ScanView> {
                                             Text(
                                               'Parcels Hold',
                                               style: TextStyle(
-                                                fontSize: screenHeight * 0.025,
+                                                fontSize: screenHeight * 0.023,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            SizedBox(height: screenHeight*0.025),
+                                            SizedBox(height: screenHeight*0.02),
                                             Center( // Center horizontally and vertically
                                               child: Text(
                                                 '$numberOfParcels',
                                                 style: TextStyle(
-                                                  fontSize: screenHeight * 0.07,
+                                                  fontSize: screenHeight * 0.065,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -359,7 +360,7 @@ class _ScanViewState extends State<ScanView> {
                     padding: EdgeInsets.all(screenWidth * 0.04),
                   ),
                   child: Icon(
-                    Icons.document_scanner,
+                    Icons.document_scanner_outlined,
                     size: iconSize,
                     color: Colors.black,
                   ),

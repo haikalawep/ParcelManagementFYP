@@ -125,7 +125,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
     return Scaffold(
       backgroundColor: TColor.secondary,
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: const Text('Manage History', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
         backgroundColor: TColor.primary,
         elevation: 0,
@@ -140,130 +140,131 @@ class _HistoryPageState extends State<HistoryPage> {
         ],
         automaticallyImplyLeading: false,
         centerTitle: true,
-      ),
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0.0,
-              left: 0.0,
-              right: 0.0,
-              bottom: screenHeight* 0.69,
-              child: Container(
-                height: screenHeight * 0.35,
-                decoration: BoxDecoration(
-                  color: TColor.primary,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.elliptical(350, 200),
-                    bottomRight: Radius.elliptical(350, 200),
-                  ),
+      ),*/
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(0),
+            child: Container(
+              height: screenHeight * 0.24,
+              decoration: BoxDecoration(
+                color: TColor.primary,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
               ),
+              child: Column(
+                children: [
+                  SizedBox(height: screenHeight*0.04),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: screenWidth*0.1),
+                      Text('Manage History', style: TextStyle(fontSize: screenHeight * 0.03 , color: Colors.white, fontWeight: FontWeight.w500)),
+                      //SizedBox(width: screenWidth * 0.6),
+                      IconButton(
+                          icon: const Icon(Icons.logout),
+                          color: Colors.white,
+                          onPressed: () {
+                            signUserOut(context);
+                          }
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: RoundTextfield(
+                      hintText: "Search History",
+                      controller: txtSearch,
+                      prefixIcon: Icons.search,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-                  child: RoundTextfield(
-                    hintText: "Search History",
-                    controller: txtSearch,
-                    left: Container(
-                      alignment: Alignment.center,
-                      width: 30,
-                      child: Image.asset(
-                        "assets/img/search.png",
-                        width: 20,
-                        height: 20,
+          ),
+          Expanded(
+            child: isLoading
+                ? const Center(child: RefreshProgressIndicator(),)
+                : ListView.builder(
+              itemCount: filteredHistoryList.length,
+              itemBuilder: (context, index) {
+                final history = filteredHistoryList[index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: TColor.topBar,
+                        width: 5.0,
+                      ),
+                      left: BorderSide(
+                        color: TColor.topBar,
+                        width: 5.0,
+                      ),
+                    ),
+                    color: Colors.white, // Ensure the container has a background color to match the Card's background
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 2,
+                      horizontal: 8,
+                    ),
+                    onTap: () {
+                      _navigateToHistoryView(history: history);
+                      // Navigate to the ParcelDetail page and pass the parcel object
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => HistoryDetail(parcel: parcel),
+                      //   ),
+                      // );
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 0.01),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
+                        children: [
+                          Text(
+                            history.trackNo, // Display the track number
+                            style: TextStyle(
+                              fontSize: screenHeight * 0.015,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.01), // Add a small space between the track number and the name
+                          Text(
+                            history.nameR,
+                            style: TextStyle(
+                              fontSize: screenHeight * 0.025,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    subtitle: Text(
+                      history.phoneR,
+                      style: TextStyle(
+                        color: Colors.blue.shade700,
+                        fontSize: screenHeight * 0.015,
+                      ),
+                    ),
+                    trailing: Text(
+                      DateFormat('dd-MM-yyyy').format(history.dateManaged),
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: screenHeight * 0.015,
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: isLoading
-                      ? const Center(child: RefreshProgressIndicator(),)
-                      : ListView.builder(
-                    itemCount: filteredHistoryList.length,
-                    itemBuilder: (context, index) {
-                      final history = filteredHistoryList[index];
-                      return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.0),
-                          border: Border(
-                            bottom: BorderSide(
-                              color: TColor.topBar,
-                              width: 5.0,
-                            ),
-                            left: BorderSide(
-                              color: TColor.topBar,
-                              width: 5.0,
-                            ),
-                          ),
-                          color: Colors.white, // Ensure the container has a background color to match the Card's background
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 8,
-                          ),
-                          onTap: () {
-                            _navigateToHistoryView(history: history);
-                            // Navigate to the ParcelDetail page and pass the parcel object
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => HistoryDetail(parcel: parcel),
-                            //   ),
-                            // );
-                          },
-                          title: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 0.01),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the start (left) of the column
-                              children: [
-                                Text(
-                                  history.trackNo, // Display the track number
-                                  style: TextStyle(
-                                    fontSize: screenHeight * 0.015,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight * 0.01), // Add a small space between the track number and the name
-                                Text(
-                                  history.nameR,
-                                  style: TextStyle(
-                                    fontSize: screenHeight * 0.025,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          subtitle: Text(
-                            history.phoneR,
-                            style: TextStyle(
-                              color: Colors.blue.shade700,
-                              fontSize: screenHeight * 0.015,
-                            ),
-                          ),
-                          trailing: Text(
-                            DateFormat('dd-MM-yyyy').format(history.dateManaged),
-                            style: TextStyle(
-                              color: Colors.black45,
-                              fontSize: screenHeight * 0.015,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-        
-          ],
-        ),
+          ),
+        ],
       ),
 
     );

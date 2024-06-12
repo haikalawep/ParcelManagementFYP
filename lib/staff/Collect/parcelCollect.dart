@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/round_Button.dart';
 import 'package:parcelmanagement/staff/Collect/SplashCollect.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -17,6 +18,7 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  bool showError = false;
 
   @override
   void reassemble() {
@@ -30,31 +32,20 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Scan QR Code", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: TColor.primary,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context); // Navigate back
+          },
+        ),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
-          // Expanded(
-          //   flex: 1,
-          //   child: FittedBox(
-          //     fit: BoxFit.contain,
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //       children: <Widget>[
-          //         // if (result != null)
-          //         //   Text(
-          //         //     'Data: ${result!.code}',
-          //         //   )
-          //         // else
-          //         //   const Text('Scan the QR Code'),
-          //         Row(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           crossAxisAlignment: CrossAxisAlignment.center,
-          //           children: <Widget>[],
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );
@@ -124,7 +115,7 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
                 builder: (BuildContext context) {
                   controller.pauseCamera();
                   return AlertDialog(
-                    title: Text('Details of Parcel'),
+                    title: Text('Details of Parcel Collection'),
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -191,10 +182,12 @@ class _ParcelCollectPageState extends State<ParcelCollectPage> {
             );
           }
         } catch (e) {
-          print('Error: $e');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
-          );
+          if (!showError) {
+            showError = true;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Wrong QR Code')),
+            );
+          }
         }
       }
     });

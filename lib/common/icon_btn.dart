@@ -15,6 +15,9 @@ class IconBtnWithCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return InkWell(
       borderRadius: BorderRadius.circular(100),
       onTap: press,
@@ -22,9 +25,9 @@ class IconBtnWithCounter extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
-            height: 46,
-            width: 46,
+            padding: const EdgeInsets.all(8),
+            height: screenHeight*0.11,
+            width: screenWidth*0.11,
             decoration: BoxDecoration(
               color: Colors.amber,
               shape: BoxShape.circle,
@@ -33,11 +36,11 @@ class IconBtnWithCounter extends StatelessWidget {
           ),
           if (numOfitem != 0)
             Positioned(
-              top: -3,
+              top: -6,
               right: 0,
               child: Container(
-                height: 20,
-                width: 20,
+                height: screenHeight*0.055,
+                width: screenWidth*0.055,
                 decoration: BoxDecoration(
                   color: const Color(0xFFFF4848),
                   shape: BoxShape.circle,
@@ -46,8 +49,8 @@ class IconBtnWithCounter extends StatelessWidget {
                 child: Center(
                   child: Text(
                     "$numOfitem",
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: TextStyle(
+                      fontSize: screenWidth*0.03,
                       height: 1,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,

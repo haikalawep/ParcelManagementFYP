@@ -15,7 +15,7 @@ class _ServoControlScreenState extends State<ServoControlScreen> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> _setServoAngle(int angle) async {
-    final response = await http.get(Uri.parse('http://192.168.0.22:8000/?angle=$angle'));
+    final response = await http.get(Uri.parse('http://192.168.0.4:8000/?angle=$angle'));
     if (response.statusCode == 200) {
       print('Servo angle set to $angle');
     } else {
@@ -41,6 +41,7 @@ class _ServoControlScreenState extends State<ServoControlScreen> {
 
             GestureDetector(
               onTap: () {
+                print("hello");
                 _setServoAngle(1000);
               },
               child: Container(

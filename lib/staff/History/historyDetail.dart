@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parcelmanagement/class/history_Model.dart';
 import 'package:parcelmanagement/class/parcel_class.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart'; // Import the updated RoundTitleTextfield widget
 
 class HistoryDetail extends StatelessWidget {
@@ -11,17 +12,29 @@ class HistoryDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      backgroundColor: TColor.secondary,
       appBar: AppBar(
-        title: Text('Parcel Details'),
+        title: const Text("History Detail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: TColor.primary,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context); // Navigate back
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(12),
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Parcel Name",
                   hintText: history.nameR,
@@ -39,9 +52,7 @@ class HistoryDetail extends StatelessWidget {
                       //hintStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
                     ),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: screenWidth * 0.02),
                   Expanded(
                     child: RoundTitleTextfield(
                       title: "Parcel No",
@@ -52,9 +63,7 @@ class HistoryDetail extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10, // Adjust the height value to set the desired gap
-              ),
+              SizedBox(height: screenHeight * 0.01),
               Row(
                 children: [
                   Expanded(
@@ -64,9 +73,7 @@ class HistoryDetail extends StatelessWidget {
                       enabled: false,
                     ),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: screenWidth * 0.02),
                   Expanded(
                     child: RoundTitleTextfield(
                       title: "Collect Option",
@@ -77,7 +84,7 @@ class HistoryDetail extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Color",
                   hintText: history.color,
@@ -85,7 +92,7 @@ class HistoryDetail extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Size",
                   hintText: history.size,
@@ -93,7 +100,7 @@ class HistoryDetail extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Status",
                   hintText: history.status,
@@ -101,7 +108,7 @@ class HistoryDetail extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Phone Number",
                   hintText: history.phoneR,
@@ -109,14 +116,13 @@ class HistoryDetail extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: RoundTitleTextfield(
                   title: "Charge",
                   hintText: 'RM ${history.charge.toString()}',
                   enabled: false,
                 ),
               ),
-
             ],
           ),
         ),

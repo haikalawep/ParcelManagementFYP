@@ -53,7 +53,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       //   ),
       //   backgroundColor: TColor.background,
       // ),
-      backgroundColor: Colors.white,
+      backgroundColor: TColor.secondary,
       body: Column(
         children: [
           SizedBox(height: screenHeight*0.07),

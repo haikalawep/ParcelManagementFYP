@@ -65,7 +65,7 @@ class _CustTabViewState extends State<CustTabView> {
                 BlendMode.srcIn,
               ),
             ),
-            label: "Home",
+            label: "Status",
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(

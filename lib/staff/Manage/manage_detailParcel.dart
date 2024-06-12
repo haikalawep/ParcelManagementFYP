@@ -144,11 +144,18 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
     final iconSize = screenWidth * 0.05; // or screenHeight * 0.08
 
     return Scaffold(
-      backgroundColor: TColor.background,
+      backgroundColor: TColor.secondary,
 
       appBar: AppBar(
         title: const Text('Manage Parcel', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
         backgroundColor: TColor.primary,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context); // Navigate back
+          },
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -164,6 +171,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
           indicatorSize: TabBarIndicatorSize.tab, // or TabBarIndicatorSize.label, depending on your preference
           indicatorWeight: 5,
         ),
+        centerTitle: true,
       ),
       body: isLoading
           ? const Center(
@@ -179,15 +187,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                 child: RoundTextfield(
                   hintText: "Search Parcel in Counter",
                   controller: txtSearchCounter,
-                  left: Container(
-                    alignment: Alignment.center,
-                    width: 30,
-                    child: Image.asset(
-                      "assets/img/search.png",
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
+                  prefixIcon: Icons.search,
                 ),
               ),
               Expanded(
@@ -196,7 +196,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                   itemBuilder: (context, index) {
                     final parcel = filteredCounterParcelList[index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
                         border: const Border(
@@ -277,15 +277,7 @@ class _ManageParcelPageState extends State<ManageParcelPage> with TickerProvider
                 child: RoundTextfield(
                   hintText: "Search Parcel in Box",
                   controller: txtSearchBox,
-                  left: Container(
-                    alignment: Alignment.center,
-                    width: 30,
-                    child: Image.asset(
-                      "assets/img/search.png",
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
+                  prefixIcon: Icons.search,
                 ),
               ),
               TabBar(

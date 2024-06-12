@@ -1,4 +1,6 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:email_otp/email_otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
@@ -63,7 +65,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               ),
 
               RoundButton(title: "Send", onPressed: () async {
-                myauth.setConfig(
+                /*myauth.setConfig(
                     appEmail: "contact@hdevcoder.com",
                     appName: "Email OTP",
                     userEmail: txtEmail.text,
@@ -83,6 +85,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       .showSnackBar(const SnackBar(
                     content: Text("Oops, OTP send failed"),
                   ));
+                }*/
+                String email = txtEmail.text.trim();
+                if (email.isNotEmpty) {
+                  resetPassword(email, context);
+                } else {
+                  showErrorMessage(context, "Please enter an email address.");
                 }
 
               }),
@@ -93,5 +101,84 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       ),
     );
   }
+
+  void resetPassword(String email, BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegExp.hasMatch(email)) {
+        throw 'Invalid email format';
+      }
+
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: email,
+      );
+
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+
+      showSuccessMessage(
+        context,
+        "Email telah dihantar",
+      );
+    } catch (e) {
+      Navigator.pop(context);
+
+      final errorMessage = e is FirebaseAuthException
+          ? e.message ?? "Email gagal dihantar. Sila cuba lagi"
+          : "Email gagal dihantar. Sila cuba lagi";
+
+      showErrorMessage(context, errorMessage);
+    }
+  }
+
+  void showSuccessMessage(BuildContext context, String message) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.success,
+      animType: AnimType.rightSlide,
+      title: 'Success',
+      desc: 'Email is already sent. Please check email to change yor password',
+    ).show();
+  }
+
+  void showErrorMessage(BuildContext context, String message) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.question,
+      animType: AnimType.rightSlide,
+      title: 'Failed',
+      desc: 'Email unsuccessful sent. Try again later',
+    ).show();
+  }
+
+  void showAutoDismissAlertDialog(
+      BuildContext context, String message, String imagePath) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.of(context).pop(true);
+        });
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(imagePath, height: 50, width: 50),
+              SizedBox(height: 10),
+              Text(message),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 //OtpScreen(myauth: myauth, email: txtEmail.text,)));
 }

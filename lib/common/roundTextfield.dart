@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../common/color_extension.dart';
 
+import 'package:flutter/material.dart';
+import '../common/color_extension.dart';
+
 class RoundTextfield extends StatelessWidget {
   final TextEditingController? controller;
   final String hintText;
@@ -9,8 +12,9 @@ class RoundTextfield extends StatelessWidget {
   final bool obscureText;
   final Color? bgColor;
   final Color? borderColor; // Add border color property
-  final Widget? left;
   final bool enabled;
+  final String? Function(String?)? validator;
+  final IconData? prefixIcon; // Add validator property
 
   const RoundTextfield({
     super.key,
@@ -19,48 +23,39 @@ class RoundTextfield extends StatelessWidget {
     this.keyboardType,
     this.bgColor,
     this.borderColor, // Initialize border color property
-    this.left,
     this.obscureText = false,
     this.enabled = true,
+    this.validator,
+    this.prefixIcon,// Initialize validator property
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: bgColor ?? TColor.textfield,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: borderColor ?? Colors.black, // Use border color or default to transparent
-        ),
-      ),
       child: Row(
         children: [
-          if (left != null)
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 15,
-              ),
-              child: left!,
-            ),
           Expanded(
-            child: TextField(
+            child: TextFormField(
               autocorrect: false,
               controller: controller,
               obscureText: obscureText,
               keyboardType: keyboardType,
               enabled: enabled,
+              validator: validator, // Use validator property
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 hintText: hintText,
                 hintStyle: TextStyle(
                   color: TColor.placeholder,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
+                prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
               ),
             ),
           ),
@@ -69,6 +64,7 @@ class RoundTextfield extends StatelessWidget {
     );
   }
 }
+
 
 class RoundTitleTextfield extends StatelessWidget {
   final TextEditingController? controller;
@@ -100,9 +96,9 @@ class RoundTitleTextfield extends StatelessWidget {
       height: 55,
       decoration: BoxDecoration(
         color: bgColor ?? TColor.textfield,
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: borderColor ?? Colors.transparent, // Use border color or default to transparent
+          color: borderColor ?? Colors.black, // Use border color or default to transparent
         ),
       ),
       child: Row(

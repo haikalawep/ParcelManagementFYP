@@ -18,6 +18,7 @@ class _WelcomeViewState extends State<WelcomeView> {
     var media = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: TColor.secondary,
       body: SingleChildScrollView(
         child: Column(
           children: [

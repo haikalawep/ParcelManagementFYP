@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:parcelmanagement/common/color_extension.dart';
+import 'package:parcelmanagement/common/round_Button.dart';
 import 'package:parcelmanagement/staff/Scan/parcelInsert.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -83,7 +85,15 @@ class _OCRPageState extends State<OCRPage> with WidgetsBindingObserver {
               ),
             Scaffold(
               appBar: AppBar(
-                title: const Text('Text Recognition Sample'),
+                title: const Text("Scan Parcel Detail", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                backgroundColor: TColor.primary,
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.pop(context); // Navigate back
+                  },
+                ),
               ),
               backgroundColor: _isPermissionGranted ? Colors.transparent : null,
               body: _isPermissionGranted
@@ -95,11 +105,12 @@ class _OCRPageState extends State<OCRPage> with WidgetsBindingObserver {
                   Container(
                     padding: const EdgeInsets.only(bottom: 30.0),
                     child: Center(
-                      child: ElevatedButton(
-                        onPressed: _scanImage,
-                        child: const Text('Scan text'),
+                      child: RoundButton(
+                          title: "Scan Text",
+                          onPressed: _scanImage,
                       ),
                     ),
+
                   ),
                 ],
               )

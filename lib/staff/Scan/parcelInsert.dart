@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:parcelmanagement/class/appValidator.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'package:parcelmanagement/common/round_Button.dart';
@@ -27,6 +28,8 @@ class ParcelDetailView extends StatefulWidget {
 }
 
 class _ParcelDetailViewState extends State<ParcelDetailView> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController txtCode = TextEditingController();
   TextEditingController txtNoParcel = TextEditingController();
   TextEditingController txtNameR = TextEditingController();
@@ -34,6 +37,7 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
   TextEditingController txtColor = TextEditingController();
   TextEditingController txtSize = TextEditingController();
   TextEditingController txtTrackingNumber = TextEditingController();
+  var appValidator = AppValidator();
 
   String selectedSize = '';
 
@@ -168,6 +172,7 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
   }
 
   Future<void> insertParcel() async {
+
     try {
       // Access the text values from the controllers
       String code = txtCode.text;
@@ -277,8 +282,6 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
     }
   }
 
-
-
   Future<String> generateQRCode(String data) async {
     try {
       // Construct the URL with query parameters
@@ -310,126 +313,136 @@ class _ParcelDetailViewState extends State<ParcelDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 64,
-              ),
-              Text(
-                "Parcel Details",
-                style: TextStyle(
-                    color: TColor.primaryText,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800),
-              ),
-              Text(
-                "Add parcel details to store",
-                style: TextStyle(
-                    color: TColor.secondaryText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              RoundTextfield(
-                hintText: "Code",
-                controller: txtCode,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              RoundTextfield(
-                hintText: "Parcel No",
-                controller: txtNoParcel,
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              RoundTextfield(
-                hintText: "Recipient Name",
-                controller: txtNameR,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              RoundTextfield(
-                hintText: "Recipient Number",
-                controller: txtPhoneR,
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              RoundTextfield(
-                hintText: "Parcel Color",
-                controller: txtColor,
-              ),
-              const SizedBox(height: 25),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Size',
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.grey[200],
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: screenHeight * 0.02),
+                Text(
+                  "Parcel Details",
+                  style: TextStyle(
+                      color: TColor.primaryText,
+                      fontSize: screenWidth*0.08,
+                      fontWeight: FontWeight.w800),
                 ),
-                value: selectedSize == '' ? null : selectedSize,
-                onChanged: (String? value) {
-                  setState(() {
-                    selectedSize = value!;
-                  });
-                },
-                items: sizes.map((String size) {
-                  return DropdownMenuItem<String>(
-                    value: size,
-                    child: Text(size),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 25),
-              TextField(
-                controller: txtTrackingNumber,
-                decoration: InputDecoration(
-                  hintText: "Tracking Number",
-                  suffixIcon: IconButton(
-                    onPressed: () async {
-                      // Launch QR code scanner
-                      String? scannedCode = await scanQRCode();
-
-                      // Update tracking number field with the scanned code
-                      if (scannedCode != null) {
-                        setState(() {
-                          txtTrackingNumber.text = scannedCode;
-                        });
-                      }
-                    },
-                    icon: Icon(Icons.qr_code),
+                Text(
+                  "Add parcel details to store",
+                  style: TextStyle(
+                      color: TColor.secondaryText,
+                      fontSize: screenWidth*0.04,
+                      fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RoundTextfield(
+                  hintText: "Code",
+                  controller: txtCode,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RoundTextfield(
+                  hintText: "Parcel No",
+                  controller: txtNoParcel,
+                  keyboardType: TextInputType.phone,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RoundTextfield(
+                  hintText: "Recipient Name",
+                  controller: txtNameR,
+                  validator: appValidator.validateRecipientName,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RoundTextfield(
+                  hintText: "Recipient Number",
+                  controller: txtPhoneR,
+                  keyboardType: TextInputType.phone,
+                  validator: appValidator.validateRecipientNumber,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RoundTextfield(
+                  hintText: "Parcel Color",
+                  controller: txtColor,
+                  validator: appValidator.validateParcelColor,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                DropdownButtonFormField<String>(
+                  validator: appValidator.validateSize,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    labelText: 'Size',
                   ),
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                ),
-              ),
-              const SizedBox(height: 25),
-              RoundButton(
-                  title: "Insert",
-                  onPressed: () {
-                    insertParcel();
-                    sendSMS(txtPhoneR.text);
-                    // Navigate to SplashView
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => SplashView()),
+                  value: selectedSize == '' ? null : selectedSize,
+                  onChanged: (String? value) {
+                    setState(() {
+                      selectedSize = value!;
+                    });
+                  },
+                  items: sizes.map((String size) {
+                    return DropdownMenuItem<String>(
+                      value: size,
+                      child: Text(size),
                     );
-                  }),
-            ],
+                  }).toList(),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                TextFormField(
+                  controller: txtTrackingNumber,
+                  validator: appValidator.validateTrackingNumber,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    hintText: "Tracking Number",
+                    suffixIcon: IconButton(
+                      onPressed: () async {
+                        // Launch QR code scanner
+                        String? scannedCode = await scanQRCode();
+
+                        // Update tracking number field with the scanned code
+                        if (scannedCode != null) {
+                          setState(() {
+                            txtTrackingNumber.text = scannedCode;
+                          });
+                        }
+                      },
+                      icon: Icon(Icons.qr_code),
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                RoundButton(
+                    title: "Insert",
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Validation successful, insert parcel and send SMS
+                        insertParcel();
+                        sendSMS(txtPhoneR.text);
+                        // Navigate to SplashView
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => SplashView()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Please fill all the information correctly!')),
+                        );
+                      }
+                    }
+                    ),
+              ],
+            ),
           ),
         ),
       ),

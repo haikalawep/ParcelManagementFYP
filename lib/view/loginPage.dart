@@ -1,7 +1,9 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:parcelmanagement/class/appValidator.dart';
 import 'package:parcelmanagement/common/color_extension.dart';
 import 'package:parcelmanagement/common/roundTextfield.dart';
 import 'package:parcelmanagement/common/round_Button.dart';
@@ -20,12 +22,25 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController txtEmail = TextEditingController();
   TextEditingController txtPassword = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  bool _isPasswordVisible = false;
+  var appValidator = AppValidator();
 
   Future<void> btnLogin() async {
+
+    if (!_formKey.currentState!.validate()) {
+      // If the form is not valid, display a snackbar with the error message.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill all the information!')),
+      );
+      return;
+    }
+
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: txtEmail.text,
@@ -49,9 +64,13 @@ class _LoginViewState extends State<LoginView> {
       }
     } on FirebaseAuthException catch (e) {
       // Show an error message if login fails
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email or Password Does Not Exist!')),
-      );
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.question,
+        animType: AnimType.rightSlide,
+        title: 'Sign In Failed',
+        desc: 'Email or Password Not Exist.',
+      ).show();
     }
   }
 
@@ -104,30 +123,6 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  void wrongEmailMessage() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          backgroundColor: Colors.deepPurple,
-          title: Center(
-            child: Text(
-              'Incorrect Email',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  /*bool userRoleIsCustomer() {
-    // Example function to determine user role based on email
-    // You can implement your own logic to determine the user role
-    // For example, check if the email is associated with a customer account
-    return txtEmail.text.endsWith('@example.com');
-  }*/
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -136,11 +131,11 @@ class _LoginViewState extends State<LoginView> {
     double avatarRadius = screenSize.width * 0.16;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9E5DE),
-
+      backgroundColor: TColor.secondary,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Center(
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -171,51 +166,70 @@ class _LoginViewState extends State<LoginView> {
                 //email text field
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        controller: txtEmail,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Email',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 8, bottom: 5),
+                        child: TextFormField(
+                          controller: txtEmail,
+                          keyboardType: TextInputType.emailAddress,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: appValidator.validateEmail,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            hintText: 'Email',
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: TColor.topBar,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 8, bottom: 5),
+                        child: TextFormField(
+                          controller: txtPassword,
+                          obscureText: !_isPasswordVisible,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: appValidator.validatePassword,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            hintText: 'Password',
+                            prefixIcon: Icon(
+                              Icons.password,
+                              color: TColor.topBar,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: TColor.topBar, // Ensure AppColors is defined in your code
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 //password text field
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        controller: txtPassword,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Password',
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                //login button
-                SizedBox(height: screenHeight * 0.02),
                 GestureDetector(
                   onTap: () {
                     btnLogin();
@@ -278,11 +292,7 @@ class _LoginViewState extends State<LoginView> {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          //border: Border.all(color: Colors.grey.shade700),
-                        ),
-                        child: Image.asset("assets/img/google_logo.png", width: 60),
+                        child: Image.asset("assets/img/google-sign-in.png", width: screenWidth*0.1),
                       ),
                     ),
                   ],
@@ -324,140 +334,4 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
-
-
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   var media = MediaQuery.of(context).size;
-  //
-  //   return Scaffold(
-  //     body: SingleChildScrollView(
-  //       child: Padding(
-  //         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.center,
-  //           children: [
-  //             const SizedBox(
-  //               height: 64,
-  //             ),
-  //             Text(
-  //               "Login",
-  //               style: TextStyle(
-  //                   color: TColor.primaryText,
-  //                   fontSize: 30,
-  //                   fontWeight: FontWeight.w800),
-  //             ),
-  //             Text(
-  //               "Add your details to login",
-  //               style: TextStyle(
-  //                   color: TColor.secondaryText,
-  //                   fontSize: 14,
-  //                   fontWeight: FontWeight.w500),
-  //             ),
-  //             const SizedBox(
-  //               height: 25,
-  //             ),
-  //             RoundTextfield(
-  //               hintText: "Your Email",
-  //               controller: txtEmail,
-  //               keyboardType: TextInputType.emailAddress,
-  //             ),
-  //             const SizedBox(
-  //               height: 25,
-  //             ),
-  //             RoundTextfield(
-  //               hintText: "Password",
-  //               controller: txtPassword,
-  //               obscureText: true,
-  //             ),
-  //             const SizedBox(
-  //               height: 25,
-  //             ),
-  //             RoundButton(
-  //                 title: "Login",
-  //                 onPressed: () {
-  //                   btnLogin();
-  //
-  //                 }),
-  //             const SizedBox(
-  //               height: 4,
-  //             ),
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => const ForgotPasswordView(),
-  //                     //ForgotPasswordView(),
-  //                   ),
-  //                 );
-  //               },
-  //               child: Text(
-  //                 "Forgot your password?",
-  //                 style: TextStyle(
-  //                     color: TColor.secondaryText,
-  //                     fontSize: 14,
-  //                     fontWeight: FontWeight.w500),
-  //               ),
-  //             ),
-  //             const SizedBox(
-  //               height: 10,
-  //             ),
-  //             Text(
-  //               "or Login With",
-  //               style: TextStyle(
-  //                   color: TColor.secondaryText,
-  //                   fontSize: 14,
-  //                   fontWeight: FontWeight.w500),
-  //             ),
-  //             const SizedBox(
-  //               height: 20,
-  //             ),
-  //             RoundIconButton(
-  //               icon: "assets/img/google_logo.png",
-  //               title: "Login with Google",
-  //               color: const Color(0xffDD4B39),
-  //               onPressed: () {
-  //                 btnLoginWithGoogle();
-  //               },
-  //             ),
-  //             const SizedBox(
-  //               height: 40,
-  //             ),
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.push(
-  //                   context,
-  //                   MaterialPageRoute(
-  //                     builder: (context) => RegisterView(),
-  //                   ),
-  //                 );
-  //               },
-  //               child: Row(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 children: [
-  //                   Text(
-  //                     "Don't have an Account? ",
-  //                     style: TextStyle(
-  //                         color: TColor.secondaryText,
-  //                         fontSize: 14,
-  //                         fontWeight: FontWeight.w500),
-  //                   ),
-  //                   Text(
-  //                     "Sign Up",
-  //                     style: TextStyle(
-  //                         color: TColor.primary,
-  //                         fontSize: 14,
-  //                         fontWeight: FontWeight.w700),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
